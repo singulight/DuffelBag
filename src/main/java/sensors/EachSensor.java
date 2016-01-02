@@ -21,6 +21,7 @@ public class EachSensor {
         POWER,
         POWER_CONSUMPTION,
         VOLTAGE,
+        CURRENT,
         WATER_FLOW,
         WATER_CONSUMPTION,
         RESISTANCE,
