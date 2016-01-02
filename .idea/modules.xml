@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/IdeaProjects/duffelbag/DuffelBag/DufflelBag.iml" filepath="$USER_HOME$/IdeaProjects/duffelbag/DuffelBag/DufflelBag.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../duffelbag/DuffelBag/DufflelBag.iml" filepath="$PROJECT_DIR$/../duffelbag/DuffelBag/DufflelBag.iml" />
+      <module fileurl="file://$PROJECT_DIR$/singulight.ru.iml" filepath="$PROJECT_DIR$/singulight.ru.iml" />
     </modules>
   </component>
 </project>

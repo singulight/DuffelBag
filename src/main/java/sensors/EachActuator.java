@@ -1,7 +1,7 @@
 package sensors;
 
 /**
- * Created by init on 18.12.15.
+ * Created by Grigorii Nizovoi info@singulight.ru on 18.12.15.
  */
 public class EachActuator {
 
@@ -9,7 +9,7 @@ public class EachActuator {
         rgb,
         relay,
         voltage
-  };
+  }
 
     private String name;
     private String mqttPrefix;

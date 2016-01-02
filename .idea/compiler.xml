@@ -24,11 +24,13 @@
         <processorPath useClasspath="true" />
         <module name="DufflelBag" />
         <module name="firstmaven" />
+        <module name="singulight.ru" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="DufflelBag" target="1.5" />
       <module name="firstmaven" target="1.5" />
+      <module name="singulight.ru" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

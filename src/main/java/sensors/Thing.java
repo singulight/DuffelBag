@@ -3,7 +3,8 @@ package sensors;
 import java.util.ArrayList;
 
 /**
- * Created by init on 18.12.15.
+ * Created by Grigorii Nizovoi info@singulight.ru on 18.12.15.
+ *
  */
 public class Thing {
 
@@ -11,9 +12,10 @@ public class Thing {
         rgbLamp,
         relay,
         dimmer
-    };
+    }
+
     private String name;
     private String mqttPrefix;
-    private ArrayList<EachSensor> sensors = new ArrayList<EachSensor>();
-    private ArrayList<EachActuator> actuators = new ArrayList<EachActuator>();
+    private ArrayList<EachSensor> sensors = new ArrayList<>();
+    private ArrayList<EachActuator> actuators = new ArrayList<>();
 }

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by init on 17.12.15.
+ * Created by Grigorii Nizovoi info@singulight.ru on 17.12.15.
  */
 public class EachSensor {
 
@@ -25,7 +25,7 @@ public class EachSensor {
         SWT,
         OTHER,
         TEXT
-    };
+    }
 
     // Sensor description and state
     private String name;
@@ -35,7 +35,7 @@ public class EachSensor {
     private float minValue = 0.0f;
     private float maxValue = 100.0f;
     private String textValue = "";      //Value if TEXT type sensor
-    private List<ISensorAction> sensorActions = new LinkedList<ISensorAction>();
+    private List<ISensorAction> sensorActions = new LinkedList<>();
 
 
     public void actionsGo() {

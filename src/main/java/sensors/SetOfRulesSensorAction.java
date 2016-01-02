@@ -1,7 +1,7 @@
 package sensors;
 
 /**
- * Created by init on 29.12.15.
+ * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
 public class SetOfRulesSensorAction implements ISensorAction {
 
