@@ -6,14 +6,14 @@ package sensors;
 public class EachActuator {
 
     public enum ActuatorType {
-        rgb,
-        relay,
-        voltage
+        RGB,
+        RELAY,
+        VOLTAGE
   }
 
     private String name;
     private String mqttPrefix;
-    private ActuatorType type = ActuatorType.voltage;
+    private ActuatorType type = ActuatorType.VOLTAGE;
     private float value;
     private float minValue = 0;
     private float maxValue = 100.0f;

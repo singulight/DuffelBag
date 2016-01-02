@@ -9,10 +9,12 @@ import java.util.ArrayList;
 public class Thing {
 
     enum type {
-        rgbLamp,
-        relay,
-        dimmer
+        RGB_LAMP,
+        RELAY,
+        DIMMER,
+        SWITCH
     }
+
 
     private String name;
     private String mqttPrefix;
