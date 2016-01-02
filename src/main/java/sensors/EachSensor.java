@@ -11,6 +11,18 @@ import java.util.List;
  */
 public class EachSensor {
 
+    EachSensor() {
+
+    }
+
+    EachSensor(long sensorId,String name,String mqttPrefix,SensorType type,float minValue,float maxValue){
+        this.sensorId = sensorId;
+        this.name = name;
+        this.mqttPrefix = mqttPrefix;
+        this.type = type;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
 
     public enum SensorType {
         TEMPERATURE,
@@ -34,13 +46,21 @@ public class EachSensor {
 
     // Sensor description and state
     private long sensorId;
+    /** Sensor name string */
     private String name;
+    /** MQTT address for this sensor */
     private String mqttPrefix;
+    /** Sensor type enum. Default value is "SensorType.VOLTAGE" */
     private SensorType type = SensorType.VOLTAGE;
-    private float value = 0.0f;                //Value if no TEXT type sensor
+    /** Sensor value if no SensorType.TEXT type. Must be synchronized to remote sensor.*/
+    private float value = 0.0f;
+    /** Minimum value of sensor */
     private float minValue = 0.0f;
+    /** Maximum value of sensor */
     private float maxValue = 100.0f;
-    private String textValue = "";      //Value if TEXT type sensor
+    /** Sensor value if SensorType.TEXT type. Must be synchronized to remote sensor.*/
+    private String textValue = "";
+    /** Collection of actions. Each sensor has no, one or many actions. Each action acts on the one actuator.*/
     private List<ISensorAction> sensorActions = new LinkedList<>();
 
     /**
