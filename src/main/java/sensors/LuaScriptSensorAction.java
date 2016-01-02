@@ -5,7 +5,18 @@ package sensors;
  */
 public class LuaScriptSensorAction implements ISensorAction {
 
+    private int actionId;
     private EachActuator targetActuator;
+
+    @Override
+    public void setActionId(int actionId) {
+        this.actionId = actionId;
+    }
+
+    @Override
+    public int getActionId() {
+        return this.actionId;
+    }
 
     @Override
     public void setTargetActuator(EachActuator ta) {

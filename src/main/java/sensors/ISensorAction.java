@@ -5,6 +5,9 @@ package sensors;
  */
 public interface ISensorAction {
 
+    void setActionId(int actionId);
+    int getActionId();
+
     void setTargetActuator (EachActuator targetActuator);
     EachActuator getTargetActuator();
 
