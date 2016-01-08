@@ -1,4 +1,4 @@
-package sensors;
+package ru.singulight.duffelbag.sensors;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.

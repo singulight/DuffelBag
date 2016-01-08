@@ -1,4 +1,4 @@
-package sensors;
+package ru.singulight.duffelbag.sensors;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,9 +1,9 @@
-package sensors;
+package ru.singulight.duffelbag.sensors;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class LuaScriptSensorAction implements ISensorAction {
+public class SetOfRulesSensorAction implements ISensorAction {
 
     private int actionId;
     private EachActuator targetActuator;
@@ -15,7 +15,7 @@ public class LuaScriptSensorAction implements ISensorAction {
 
     @Override
     public int getActionId() {
-        return this.actionId;
+        return actionId;
     }
 
     @Override
