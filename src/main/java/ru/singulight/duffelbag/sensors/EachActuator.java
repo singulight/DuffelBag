@@ -3,7 +3,7 @@ package ru.singulight.duffelbag.sensors;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 18.12.15.
  */
-public class EachActuator {
+public class EachActuator extends EachMqttNode {
 
     public enum ActuatorType {
         RGB,
@@ -11,8 +11,6 @@ public class EachActuator {
         VOLTAGE
   }
 
-    private String name;
-    private String mqttPrefix;
     private ActuatorType type = ActuatorType.VOLTAGE;
     private float value;
     private float minValue = 0;

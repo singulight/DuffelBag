@@ -13,14 +13,15 @@ public class Main {
     private MqttClient mqttClient;
 
     public static void main(String[] args) {
-        new Main().doDemo();
+        new Main().doMain();
     }
 
-    private void doDemo() {
+    private void doMain() {
         try {
             mqttClient = new MqttClient(brokerURL, serverStringId);
             mqttClient.connect();
-            mqttClient.setCallback(new SimpleMqttCallback());
+            SimpleMqttCallback mqttCallback = new SimpleMqttCallback();
+            mqttClient.setCallback(mqttCallback);
             mqttClient.subscribe("#");
         } catch (MqttException e) {
             e.printStackTrace();

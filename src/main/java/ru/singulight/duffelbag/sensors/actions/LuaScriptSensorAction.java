@@ -1,4 +1,7 @@
-package ru.singulight.duffelbag.sensors;
+package ru.singulight.duffelbag.sensors.actions;
+
+import ru.singulight.duffelbag.sensors.EachActuator;
+import ru.singulight.duffelbag.sensors.actions.ISensorAction;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.

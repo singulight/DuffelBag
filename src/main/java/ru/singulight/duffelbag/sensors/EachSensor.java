@@ -1,5 +1,7 @@
 package ru.singulight.duffelbag.sensors;
 
+import ru.singulight.duffelbag.sensors.actions.ISensorAction;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,16 +11,16 @@ import java.util.List;
  *
  *
  */
-public class EachSensor {
+public class EachSensor extends EachMqttNode {
 
-    EachSensor() {
+    public EachSensor() {
 
     }
 
-    EachSensor(long sensorId,String name,String mqttPrefix,SensorType type,float minValue,float maxValue){
-        this.sensorId = sensorId;
-        this.name = name;
-        this.mqttPrefix = mqttPrefix;
+    public EachSensor(long sensorId,String name,String mqttTopic,SensorType type,float minValue,float maxValue){
+        super.id = sensorId;
+        super.name = name;
+        super.mqttTopic = mqttTopic;
         this.type = type;
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -44,12 +46,7 @@ public class EachSensor {
         TEXT
     }
 
-    // Sensor description and state
-    private long sensorId;
-    /** Sensor name string */
-    private String name;
-    /** MQTT address for this sensor */
-    private String mqttPrefix;
+
     /** Sensor type enum. Default value is "SensorType.VOLTAGE" */
     private SensorType type = SensorType.VOLTAGE;
     /** Sensor value if no SensorType.TEXT type. Must be synchronized to remote sensor.*/
@@ -79,18 +76,6 @@ public class EachSensor {
 
 /*Getters and Setters */
 
-    public long getSensorId() {
-        return sensorId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getMqttPrefix() {
-        return mqttPrefix;
-    }
-
     public float getValue() {
         return value;
     }
@@ -107,10 +92,10 @@ public class EachSensor {
         return textValue;
     }
 
-    public void configure(long sensorId,String name,String mqttPrefix,SensorType type,float minValue,float maxValue) {
-        this.sensorId = sensorId;
-        this.name = name;
-        this.mqttPrefix = mqttPrefix;
+    public void configure(long sensorId,String name,String mqttTopic,SensorType type,float minValue,float maxValue) {
+        super.id = sensorId;
+        super.name = name;
+        super.mqttTopic = mqttTopic;
         this.type = type;
         this.minValue = minValue;
         this.maxValue = maxValue;
