@@ -1,4 +1,4 @@
-package ru.singulight.duffelbag.mqtt;
+package ru.singulight.duffelbag.main;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;

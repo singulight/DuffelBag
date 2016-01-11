@@ -1,6 +1,7 @@
-package ru.singulight.duffelbag.sensors;
+package ru.singulight.duffelbag.mqttnodes;
 
-import ru.singulight.duffelbag.sensors.actions.ISensorAction;
+import ru.singulight.duffelbag.mqttnodes.actions.ISensorAction;
+import ru.singulight.duffelbag.mqttnodes.types.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,13 +12,13 @@ import java.util.List;
  *
  *
  */
-public class EachSensor extends EachMqttNode {
+public class SensorNode extends BaseNode {
 
-    public EachSensor() {
+    public SensorNode() {
 
     }
 
-    public EachSensor(long sensorId,String name,String mqttTopic,SensorType type,float minValue,float maxValue){
+    public SensorNode(long sensorId, String name, String mqttTopic, SensorType type, float minValue, float maxValue){
         super.id = sensorId;
         super.name = name;
         super.mqttTopic = mqttTopic;
@@ -26,25 +27,7 @@ public class EachSensor extends EachMqttNode {
         this.maxValue = maxValue;
     }
 
-    public enum SensorType {
-        TEMPERATURE,
-        REL_HUMIDITY,
-        ATMOSPHERIC_PRESSURE,
-        RAINFALL,
-        WIND_SPEED,
-        POWER,
-        POWER_CONSUMPTION,
-        VOLTAGE,
-        CURRENT,
-        WATER_FLOW,
-        WATER_CONSUMPTION,
-        RESISTANCE,
-        GAS_CONCENTRATION,
-        PUSH_BUTTON,
-        SWT,
-        OTHER,
-        TEXT
-    }
+
 
 
     /** Sensor type enum. Default value is "SensorType.VOLTAGE" */

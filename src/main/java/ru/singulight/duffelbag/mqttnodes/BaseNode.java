@@ -1,10 +1,10 @@
-package ru.singulight.duffelbag.sensors;
+package ru.singulight.duffelbag.mqttnodes;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
  */
-public abstract class EachMqttNode {
+public abstract class BaseNode {
 
     /** Sensor id*/
     protected long id;

@@ -1,15 +1,14 @@
-package ru.singulight.duffelbag.sensors.actions;
+package ru.singulight.duffelbag.mqttnodes.actions;
 
-import ru.singulight.duffelbag.sensors.EachActuator;
-import ru.singulight.duffelbag.sensors.actions.ISensorAction;
+import ru.singulight.duffelbag.mqttnodes.ActuatorNode;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class SetOfRulesSensorAction implements ISensorAction {
+public class LuaScriptSensorAction implements ISensorAction {
 
     private int actionId;
-    private EachActuator targetActuator;
+    private ActuatorNode targetActuator;
 
     @Override
     public void setActionId(int actionId) {
@@ -18,16 +17,16 @@ public class SetOfRulesSensorAction implements ISensorAction {
 
     @Override
     public int getActionId() {
-        return actionId;
+        return this.actionId;
     }
 
     @Override
-    public void setTargetActuator(EachActuator ta) {
+    public void setTargetActuator(ActuatorNode ta) {
         this.targetActuator = ta;
     }
 
     @Override
-    public EachActuator getTargetActuator() {
+    public ActuatorNode getTargetActuator() {
         return this.targetActuator;
     }
 

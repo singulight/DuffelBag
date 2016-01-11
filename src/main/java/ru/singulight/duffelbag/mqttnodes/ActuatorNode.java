@@ -1,15 +1,9 @@
-package ru.singulight.duffelbag.sensors;
-
+package ru.singulight.duffelbag.mqttnodes;
+import ru.singulight.duffelbag.mqttnodes.types.*;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 18.12.15.
  */
-public class EachActuator extends EachMqttNode {
-
-    public enum ActuatorType {
-        RGB,
-        RELAY,
-        VOLTAGE
-  }
+public class ActuatorNode extends BaseNode {
 
     private ActuatorType type = ActuatorType.VOLTAGE;
     private float value;

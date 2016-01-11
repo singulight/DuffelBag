@@ -1,34 +1,34 @@
-package ru.singulight.duffelbag.sensors;
+package ru.singulight.duffelbag.mqttnodes;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
- * Array of all sensors, actuators and things
+ * Array of all mqttnodes, actuators and things
  */
-public class AllMqttNodes {
+public class AllNodes {
 
-    private AllMqttNodes() {
+    private AllNodes() {
 
     }
 
-    private static AllMqttNodes ourInstance = new AllMqttNodes();
+    private static AllNodes ourInstance = new AllNodes();
 
-    public static AllMqttNodes getInstance() {
+    public static AllNodes getInstance() {
         return ourInstance;
     }
 
-    private static List <EachSensor> allSensors = new LinkedList<>();
-    private static List <EachActuator> allActuators = new LinkedList<>();
+    private static List <SensorNode> allSensors = new LinkedList<>();
+    private static List <ActuatorNode> allActuators = new LinkedList<>();
     private static List <Thing> allThings = new LinkedList<>();
 
     /** Add sensor to array if not exist
      * @param sens add sensor if his MQTT address not exist in array
      **/
-    public void addSensor(EachSensor sens) {
+    public void addSensor(SensorNode sens) {
         int i = 0;
-        for (EachSensor eachSensor : allSensors) {
+        for (SensorNode eachSensor : allSensors) {
             if (eachSensor.getMqttTopic().equals(sens.getMqttTopic())) {
                 i++;
             }
@@ -38,10 +38,10 @@ public class AllMqttNodes {
     /** Add actuator to array if not exist
      * @param actu add actuator if his MQTT address not exist in array
      **/
-    public void addActuator(EachActuator actu) {
+    public void addActuator(ActuatorNode actu) {
         int i = 0;
-        for (EachActuator eachActuator : allActuators) {
-            if(eachActuator.getMqttTopic().equals(actu.getMqttTopic())) {
+        for (ActuatorNode actuatorNode : allActuators) {
+            if(actuatorNode.getMqttTopic().equals(actu.getMqttTopic())) {
                 i++;
             }
         }
@@ -60,7 +60,7 @@ public class AllMqttNodes {
         if (i == 0) allThings.add(thing);
     }
     /**
-     * @return count of registered sensors
+     * @return count of registered mqttnodes
      **/
     public int sensorsSize() {
         return allSensors.size();
