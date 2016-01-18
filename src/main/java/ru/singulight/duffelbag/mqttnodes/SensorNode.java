@@ -42,6 +42,8 @@ public class SensorNode extends BaseNode {
     private String textValue = "";
     /** Collection of actions. Each sensor has no, one or many actions. Each action acts on the one actuator.*/
     private List<ISensorAction> sensorActions = new LinkedList<>();
+    /** True if sensor is known */
+    private boolean known = false;
 
     /**
      * Run all actions. Each sensor has no, one or many actions. Each action acts on the one actuator.
@@ -73,6 +75,10 @@ public class SensorNode extends BaseNode {
 
     public String getTextValue() {
         return textValue;
+    }
+
+    public SensorType getSensorType() {
+        return type;
     }
 
     public void configure(long sensorId,String name,String mqttTopic,SensorType type,float minValue,float maxValue) {
