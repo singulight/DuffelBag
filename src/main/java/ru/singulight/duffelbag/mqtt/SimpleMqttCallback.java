@@ -1,4 +1,4 @@
-package ru.singulight.duffelbag.main;
+package ru.singulight.duffelbag.mqtt;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;

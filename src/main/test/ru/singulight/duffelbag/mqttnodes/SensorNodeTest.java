@@ -33,7 +33,7 @@ public class SensorNodeTest {
     }
     @Test
     public void TestCreateObject() {
-        assertTrue("object not create",sensorNode != null);
+        assertNotNull("object not create",sensorNode);
         assertEquals(sensorNode.getId(),0x100);
         assertEquals(sensorNode.getName(),"Out temperature");
         assertEquals(sensorNode.getMqttTopic(),"duffelbag/temperature/0000000000000100");

@@ -19,9 +19,9 @@ public class AllNodes {
         return ourInstance;
     }
 
-    private static List <SensorNode> allSensors = new LinkedList<>();
-    private static List <ActuatorNode> allActuators = new LinkedList<>();
-    private static List <Thing> allThings = new LinkedList<>();
+    public static List <SensorNode> allSensors = new LinkedList<>();
+    public static List <ActuatorNode> allActuators = new LinkedList<>();
+    public static List <Thing> allThings = new LinkedList<>();
 
     /** Add sensor to array if not exist
      * @param sens add sensor if his MQTT address not exist in array
