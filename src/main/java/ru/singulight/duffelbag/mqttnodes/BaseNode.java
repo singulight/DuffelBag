@@ -1,5 +1,7 @@
 package ru.singulight.duffelbag.mqttnodes;
 
+import ru.singulight.duffelbag.mqttnodes.types.NodeType;
+
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
@@ -14,7 +16,12 @@ public abstract class BaseNode {
     protected String mqttTopic;
     /** True if all the parameters are known */
     protected boolean known;
+    /** Note type */
+    protected NodeType nodeType;
 
+    public NodeType getNodeType() {
+        return nodeType;
+    }
     public long getId() {
         return id;
     }
@@ -30,7 +37,6 @@ public abstract class BaseNode {
     public boolean isKnown() {
         return known;
     }
-
     public void setKnown(boolean known) {
         this.known = known;
     }

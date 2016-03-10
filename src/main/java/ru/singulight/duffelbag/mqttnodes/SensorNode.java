@@ -15,30 +15,21 @@ import java.util.List;
 public class SensorNode extends BaseNode {
 
     public SensorNode() {
-
     }
 
-    public SensorNode(long sensorId, String name, String mqttTopic, SensorType type, float minValue, float maxValue){
+    public SensorNode(long sensorId, String mqttTopic, NodeType type) {
         super.id = sensorId;
-        super.name = name;
         super.mqttTopic = mqttTopic;
-        this.type = type;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
+        super.nodeType = type;
     }
 
-
-
-
-    /** Sensor type enum. Default value is "SensorType.VOLTAGE" */
-    private SensorType type = SensorType.VOLTAGE;
-    /** Sensor value if no SensorType.TEXT type. Must be synchronized to remote sensor.*/
+    /** Sensor value if no NodeType.TEXT type. Must be synchronized to remote sensor.*/
     private float value = 0.0f;
     /** Minimum value of sensor */
     private float minValue = 0.0f;
     /** Maximum value of sensor */
     private float maxValue = 100.0f;
-    /** Sensor value if SensorType.TEXT type. Must be synchronized to remote sensor.*/
+    /** Sensor value if NodeType.TEXT type. Must be synchronized to remote sensor.*/
     private String textValue = "";
     /** Collection of actions. Each sensor has no, one or many actions. Each action acts on the one actuator.*/
     private List<ISensorAction> sensorActions = new LinkedList<>();
@@ -51,7 +42,7 @@ public class SensorNode extends BaseNode {
      */
     public void actionsGo() {
         sensorActions.forEach((action) -> {
-            if (type == SensorType.TEXT) {
+            if (nodeType == NodeType.TEXT) {
                 action.go(textValue);
             } else {
                 action.go(value);
@@ -64,28 +55,32 @@ public class SensorNode extends BaseNode {
     public float getValue() {
         return value;
     }
+    public void setValue(float value) { this.value = value; }
 
     public float getMinValue() {
         return minValue;
     }
+    public void setMinValue (float minValue) { this.minValue = minValue; }
 
     public float getMaxValue() {
         return maxValue;
     }
+    public void setMaxValue(float maxValue) { this.maxValue = maxValue; }
 
     public String getTextValue() {
         return textValue;
     }
+    public void setTextValue(String textValue) { this.textValue = textValue; }
 
-    public SensorType getSensorType() {
-        return type;
+    public NodeType getSensorType() {
+        return nodeType;
     }
 
-    public void configure(long sensorId,String name,String mqttTopic,SensorType type,float minValue,float maxValue) {
+    public void configure(long sensorId,String name,String mqttTopic,NodeType type,float minValue,float maxValue) {
         super.id = sensorId;
         super.name = name;
         super.mqttTopic = mqttTopic;
-        this.type = type;
+        super.nodeType = type;
         this.minValue = minValue;
         this.maxValue = maxValue;
     }

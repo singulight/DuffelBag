@@ -11,7 +11,6 @@ public class Thing extends BaseNode {
 
     private String name;
     private String mqttPrefix;
-    private ThingType type = ThingType.RELAY;
     private ArrayList<SensorNode> sensors = new ArrayList<>();
     private ArrayList<ActuatorNode> actuators = new ArrayList<>();
 }

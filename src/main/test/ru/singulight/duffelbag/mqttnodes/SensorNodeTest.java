@@ -6,7 +6,7 @@ import org.junit.Test;
 import ru.singulight.duffelbag.mqttnodes.actions.ISensorAction;
 import ru.singulight.duffelbag.mqttnodes.actions.LuaScriptSensorAction;
 import ru.singulight.duffelbag.mqttnodes.actions.SetOfRulesSensorAction;
-import ru.singulight.duffelbag.mqttnodes.types.SensorType;
+import ru.singulight.duffelbag.mqttnodes.types.NodeType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class SensorNodeTest {
     @Before
     public void setUp() throws Exception {
 
-        sensorNode = new SensorNode(0x100,"Out temperature","duffelbag/temperature/0000000000000100", SensorType.OTHER,0,100);
+        sensorNode = new SensorNode(0x100, "duffelbag/temperature/0000000000000100", NodeType.OTHER);
 
     }
 
@@ -38,7 +38,7 @@ public class SensorNodeTest {
         assertEquals(sensorNode.getName(),"Out temperature");
         assertEquals(sensorNode.getMqttTopic(),"duffelbag/temperature/0000000000000100");
         assertEquals(sensorNode.isKnown(),false);
-        assertEquals(sensorNode.getSensorType(),SensorType.OTHER);
+        assertEquals(sensorNode.getSensorType(), NodeType.OTHER);
         assertEquals(sensorNode.getMinValue(),0,0);
         assertEquals(sensorNode.getMaxValue(),100,0);
     }

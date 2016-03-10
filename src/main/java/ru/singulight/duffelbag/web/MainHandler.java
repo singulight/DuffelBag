@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import ru.singulight.duffelbag.mqttnodes.*;
 
@@ -26,9 +27,10 @@ public class MainHandler extends AbstractHandler {
         httpOut.println("Sensors count: " + AllNodes.allSensors.size() + "<br/>");
         httpOut.println("<table> <tr><th>id</th> <th>Mqtt topic</th> <th>Value</th> <tr>");
 
-        for (SensorNode eachSensor : AllNodes.allSensors) {
-            httpOut.println("<tr> <td>" + eachSensor.getId() + "</td> <td>" + eachSensor.getMqttTopic() +
-                    "</td> <td>" + eachSensor.getValue() + "</td> </tr>");
+        for (Map.Entry entry : AllNodes.allSensors.entrySet()) {
+            SensorNode sensorNode = (SensorNode) entry.getValue();
+            httpOut.println("<tr> <td>" + entry.getKey() + "</td> <td>" + sensorNode.getSensorType() +
+                    "</td> <td>" + sensorNode.getValue() + "</td> </tr>");
         }
         httpOut.println("</table>");
         request.setHandled(true);

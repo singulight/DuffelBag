@@ -1,7 +1,7 @@
 package ru.singulight.duffelbag.mqttnodes;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
@@ -19,48 +19,41 @@ public class AllNodes {
         return ourInstance;
     }
 
-    public static List <SensorNode> allSensors = new LinkedList<>();
-    public static List <ActuatorNode> allActuators = new LinkedList<>();
-    public static List <Thing> allThings = new LinkedList<>();
 
-    /** Add sensor to array if not exist
-     * @param sens add sensor if his MQTT address not exist in array
-     **/
-    public void addSensor(SensorNode sens) {
-        int i = 0;
-        for (SensorNode eachSensor : allSensors) {
-            if (eachSensor.getMqttTopic().equals(sens.getMqttTopic())) {
-                i++;
-            }
-        }
-        if (i == 0) allSensors.add(sens);
+    public static Map<String, SensorNode> allSensors = new Hashtable<>();
+    public static Map<String, ActuatorNode> allActuators = new Hashtable<>();
+    public static Map<String, Thing> allThings = new Hashtable<>();
+
+    public boolean isSensorExist(String topic) {
+        return allSensors.containsKey(topic);
     }
-    /** Add actuator to array if not exist
-     * @param actu add actuator if his MQTT address not exist in array
-     **/
-    public void addActuator(ActuatorNode actu) {
-        int i = 0;
-        for (ActuatorNode actuatorNode : allActuators) {
-            if(actuatorNode.getMqttTopic().equals(actu.getMqttTopic())) {
-                i++;
-            }
-        }
-        if (i == 0) allActuators.add(actu);
+
+    public boolean isActuatorExist(String topic) {
+        return  allActuators.containsKey(topic);
     }
-    /** Add thing to array if not exist
-     * @param thing add this if his MQTT address not exist in array
-     **/
+
+    public boolean isThingExist(String topic) {
+        return allThings.containsKey(topic);
+    }
+
+    public void addSensor (SensorNode sensor) {
+        allSensors.put(sensor.getMqttTopic(), sensor);
+    }
+
+    public void addActuator(ActuatorNode actuator) {
+        allActuators.put(actuator.getMqttTopic(), actuator);
+    }
+
     public void addThing(Thing thing) {
-        int i = 0;
-        for (Thing eachThing : allThings) {
-            if(eachThing.getMqttTopic().equals(thing.getMqttTopic())) {
-                i++;
-            }
-        }
-        if (i == 0) allThings.add(thing);
+        allThings.put(thing.getMqttTopic(), thing);
     }
+
+    public SensorNode getSensor(String topic) {
+        return (SensorNode) allSensors.get(topic);
+    }
+
     /**
-     * @return count of registered mqttnodes
+     * @return count of registered sensors
      **/
     public int sensorsSize() {
         return allSensors.size();

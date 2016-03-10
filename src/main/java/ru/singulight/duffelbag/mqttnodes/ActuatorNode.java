@@ -5,8 +5,13 @@ import ru.singulight.duffelbag.mqttnodes.types.*;
  */
 public class ActuatorNode extends BaseNode {
 
-    private ActuatorType type = ActuatorType.VOLTAGE;
     private float value;
     private float minValue = 0;
     private float maxValue = 100.0f;
+
+    public ActuatorNode(long id, String topic, NodeType nodeType) {
+        super.id = id;
+        super.mqttTopic = topic;
+        super.nodeType = nodeType;
+    }
 }

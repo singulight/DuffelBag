@@ -3,7 +3,7 @@ package ru.singulight.duffelbag.mqttnodes.types;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 11.01.16.
  */
-public enum SensorType {
+public enum NodeType {
     TEMPERATURE,
     REL_HUMIDITY,
     ATMOSPHERIC_PRESSURE,
@@ -20,5 +20,13 @@ public enum SensorType {
     PUSH_BUTTON,
     SWT,
     OTHER,
-    TEXT
+    TEXT,
+/* Thing types */
+    RGB_LAMP,
+    DIMMER,
+    SWITCH,
+/* Actuator types */
+    RGB,
+    RELAY,
+    AC_VOLTAGE
 }
