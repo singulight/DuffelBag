@@ -2,9 +2,13 @@ package ru.singulight.duffelbag.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import ru.singulight.duffelbag.mqttnodes.ActuatorNode;
 import ru.singulight.duffelbag.mqttnodes.SensorNode;
 import ru.singulight.duffelbag.mqttnodes.AllNodes;
+import ru.singulight.duffelbag.mqttnodes.Thing;
 import ru.singulight.duffelbag.mqttnodes.types.NodeType;
 
 import java.math.BigInteger;
@@ -34,7 +38,7 @@ public class AddOrRefreshNode {
         this.mqttMessage = message;
     }
 
-    public void parseAndDetectDuffelbagNode() throws Exception {
+    public void detectAndParseDuffelbagNode() {
 
         String [] nodeParts = topic.split("/");
         if (nodeParts[0].equals("duffelbag") && nodeParts.length == 3) {
@@ -76,6 +80,9 @@ public class AddOrRefreshNode {
                 case GAS_CONCENTRATION:
                 case PUSH_BUTTON:
                 case SWT:
+                    /**
+                     * Parse sensor with duffelbag format and float value
+                     * */
                     byte [] messageByteArray = mqttMessage.getPayload();
                     floatValue = ByteBuffer.wrap(messageByteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat(); //May throw BufferUnderflowException
                     id = new BigInteger(nodeParts[2], 16).longValue(); // May throw NumberFormatException
@@ -89,6 +96,9 @@ public class AddOrRefreshNode {
                     }
                     break;
                 case TEXT:
+                    /**
+                     * Parse sensor with duffelbag format and text value
+                     * */
                     id = new BigInteger(nodeParts[2], 16).longValue(); // May throw NumberFormatException
                     if(!allNodes.isSensorExist(topic)) {
                         SensorNode sensorText = new SensorNode(id, topic, nodeType);
@@ -102,6 +112,9 @@ public class AddOrRefreshNode {
                 case RGB:
                 case RELAY:
                 case AC_VOLTAGE:
+                    /**
+                     * Parse actuator with duffelbag format
+                     * */
                     id = new BigInteger(nodeParts[2], 16).longValue(); // May throw NumberFormatException
                     if(!allNodes.isActuatorExist(topic)) {
                         ActuatorNode actuatorNode = new ActuatorNode(id, topic, nodeType);
@@ -110,6 +123,9 @@ public class AddOrRefreshNode {
                     break;
             }
         } else {
+            /**
+             * Parse sensor with non duffelbag format
+             * */
             if(!allNodes.isSensorExist(topic)) {
                 SensorNode otherNode = new SensorNode(404, topic, NodeType.OTHER);
                 otherNode.setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
@@ -119,5 +135,12 @@ public class AddOrRefreshNode {
                 allNodes.getSensor(topic).setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
             }
         }
+    }
+
+    private void parseThingNode(Thing thing) throws ParseException {
+        String message = thing.getConfigMessage();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject mainObject = (JSONObject) jsonParser.parse(message);
+
     }
 }

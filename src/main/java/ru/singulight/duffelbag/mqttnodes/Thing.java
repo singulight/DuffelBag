@@ -8,9 +8,16 @@ import ru.singulight.duffelbag.mqttnodes.types.*;
  */
 public class Thing extends BaseNode {
 
-
-    private String name;
-    private String mqttPrefix;
+    private String configMessage;
     private ArrayList<SensorNode> sensors = new ArrayList<>();
     private ArrayList<ActuatorNode> actuators = new ArrayList<>();
+
+
+    public String getConfigMessage() {
+        return configMessage;
+    }
+
+    public void setConfigMessage(String configMessage) {
+        this.configMessage = configMessage;
+    }
 }

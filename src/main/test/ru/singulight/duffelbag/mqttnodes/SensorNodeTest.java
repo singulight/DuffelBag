@@ -23,7 +23,8 @@ public class SensorNodeTest {
     @Before
     public void setUp() throws Exception {
 
-        sensorNode = new SensorNode(0x100, "duffelbag/temperature/0000000000000100", NodeType.OTHER);
+        sensorNode = new SensorNode(0x100, "duffelbag/temperature/0000000000000100", NodeType.TEMPERATURE);
+        sensorNode.setName("Out temperature");
 
     }
 
@@ -38,7 +39,7 @@ public class SensorNodeTest {
         assertEquals(sensorNode.getName(),"Out temperature");
         assertEquals(sensorNode.getMqttTopic(),"duffelbag/temperature/0000000000000100");
         assertEquals(sensorNode.isKnown(),false);
-        assertEquals(sensorNode.getSensorType(), NodeType.OTHER);
+        assertEquals(sensorNode.getSensorType(), NodeType.TEMPERATURE);
         assertEquals(sensorNode.getMinValue(),0,0);
         assertEquals(sensorNode.getMaxValue(),100,0);
     }

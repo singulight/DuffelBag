@@ -4,14 +4,6 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import ru.singulight.duffelbag.mqttnodes.AllNodes;
-import ru.singulight.duffelbag.mqttnodes.SensorNode;
-import ru.singulight.duffelbag.mqttnodes.types.*;
-
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
-import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
 
 /**ra6sk1We
  *
@@ -31,7 +23,7 @@ public class SimpleMqttCallback implements MqttCallback {
         System.out.println(s+" "+mqttMessage.toString());
         System.out.println(sensors.sensorsSize());
         AddOrRefreshNode nodeFactory = new AddOrRefreshNode(s,mqttMessage);
-        nodeFactory.parseAndDetectDuffelbagNode();
+        nodeFactory.detectAndParseDuffelbagNode();
     }
 
     @Override

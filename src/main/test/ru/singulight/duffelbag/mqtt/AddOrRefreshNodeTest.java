@@ -4,8 +4,19 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.singulight.duffelbag.mqttnodes.AllNodes;
+import ru.singulight.duffelbag.mqttnodes.SensorNode;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
+
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 05.03.16.
@@ -14,10 +25,10 @@ public class AddOrRefreshNodeTest {
 
     AddOrRefreshNode addOrRefreshNode;
     MqttMessage mqttMessage;
+    AllNodes allNodes = AllNodes.getInstance();
 
     @Before
     public void setUp() throws Exception {
-        mqttMessage = new MqttMessage();
     }
 
     @After
@@ -26,7 +37,52 @@ public class AddOrRefreshNodeTest {
     }
 
     @Test
-    public void testParseAndDetectDuffelbagNodeSensorFloat() throws Exception {
+    public void testDetectAndParseDuffelbagNodeSensorFloat() throws Exception {
+
+        mqttMessage = new MqttMessage();
+        assertNotNull(allNodes);
+
+        mqttMessage.setPayload(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(10.2f).array());
+
         addOrRefreshNode = new AddOrRefreshNode("duffelbag/temperature/00000000000000f3",mqttMessage);
+        assertNotNull(addOrRefreshNode);
+
+        addOrRefreshNode.detectAndParseDuffelbagNode();
+
+        SensorNode testingSensor = allNodes.getSensor("duffelbag/temperature/00000000000000f3");
+        assertNotNull(testingSensor);
+
+        assertEquals(testingSensor.getId(), 0xf3);
+        assertEquals(testingSensor.getSensorType(), TEMPERATURE);
+        assertEquals(testingSensor.getValue(), 10.2f, 0);
+        assertEquals(testingSensor.getMqttTopic(), "duffelbag/temperature/00000000000000f3");
     }
+
+    @Test
+    public void testDetectAndParseDuffelbagNodeSensorText() throws Exception {
+
+        assertNotNull(allNodes);
+        mqttMessage = new MqttMessage();
+
+        mqttMessage.setPayload("Test message".getBytes(StandardCharsets.UTF_8));
+
+        addOrRefreshNode = new AddOrRefreshNode("duffelbag/text/00000000000000f4",mqttMessage);
+        assertNotNull("parser did not create",addOrRefreshNode);
+
+        SensorNode testingSensor = allNodes.getSensor("duffelbag/text/00000000000000f4");
+        assertNotNull("Sensor object did not create",testingSensor);
+
+        assertEquals(testingSensor.getId(), 0xf4);
+        assertEquals(testingSensor.getSensorType(), TEXT);
+        assertEquals(testingSensor.getTextValue(), "Test message");
+        assertEquals(testingSensor.getMqttTopic(), "duffelbag/text/00000000000000f4");
+
+    }
+
+    @Test
+    public void testThingParse() throws Exception {
+
+        String testJSON = "{\"ver\":1,\"id\":234987,\"name\":\"RGB светильник\",\"location\":\"\",\"actuators\":[{\"topic\":\"duffelbag/rgb/00000000000000f4\",\"name\":\"RGB лампа\",\"minvalue\":0,\"maxvalue\":16777216}],\"sensors\":[{\"topic\":\"duffelbag/voltage/00000000000000f5\",\"name\":\"Входное напряжение\",\"minvalue\":0,\"maxvalue\":380},{\"topic\":\"duffelbag/power/00000000000000f6\",\"name\":\"Потребляемая мощность\",\"minvalue\":0,\"maxvalue\":30}]}";
+    }
+
 }
