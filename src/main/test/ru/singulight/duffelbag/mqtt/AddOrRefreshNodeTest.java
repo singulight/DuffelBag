@@ -10,7 +10,6 @@ import ru.singulight.duffelbag.mqttnodes.SensorNode;
 import static org.junit.Assert.fail;
 import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
 
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +46,7 @@ public class AddOrRefreshNodeTest {
         addOrRefreshNode = new AddOrRefreshNode("duffelbag/temperature/00000000000000f3",mqttMessage);
         assertNotNull(addOrRefreshNode);
 
-        addOrRefreshNode.detectAndParseDuffelbagNode();
+        addOrRefreshNode.detectDuffelbagNode();
 
         SensorNode testingSensor = allNodes.getSensor("duffelbag/temperature/00000000000000f3");
         assertNotNull(testingSensor);
@@ -81,8 +80,37 @@ public class AddOrRefreshNodeTest {
 
     @Test
     public void testThingParse() throws Exception {
+        /**
+         * Thing configuration JSON packet ver. 1.0
+         * {
+         *      "ver":"1.0",
+         *      "id":"id string",                   --  string of hexadecimal id, will convert to long
+         *      "name":"string of thing name",
+         *      "location":"string of location",
+         *      "actuators":[{                      -- array of actuators
+         *                      "topic":"actuator's mqtt topic string",
+         *                      "name":"actuator's name string",
+         *                      "minvalue":"minimum value will be float",
+         *                      "maxvalue":"maximum value will be float"
+         *                  },{
+         *                      ...
+         *                      next actuator
+         *                      ...
+         *                  }],
+         *      "sensors":[{                        -- array of sensors
+         *                      "topic":"sensor's mqtt topic string",
+         *                      "name":"sensor's name",
+         *                      "minvalue":"minimum value will be float",
+         *                      "maxvalue":"maximum value will be float"
+         *                },{
+         *                      ...
+         *                      next sensor
+         *                      ....
+         *                }]
+         * }
+         * */
 
-        String testJSON = "{\"ver\":1,\"id\":234987,\"name\":\"RGB светильник\",\"location\":\"\",\"actuators\":[{\"topic\":\"duffelbag/rgb/00000000000000f4\",\"name\":\"RGB лампа\",\"minvalue\":0,\"maxvalue\":16777216}],\"sensors\":[{\"topic\":\"duffelbag/voltage/00000000000000f5\",\"name\":\"Входное напряжение\",\"minvalue\":0,\"maxvalue\":380},{\"topic\":\"duffelbag/power/00000000000000f6\",\"name\":\"Потребляемая мощность\",\"minvalue\":0,\"maxvalue\":30}]}";
+        String testJSON = "{\"ver\":\"1.0\",\"id\":\"00000000000000f3\",\"name\":\"RGB светильник\",\"location\":\"\",\"actuators\":[{\"topic\":\"duffelbag/rgb/00000000000000f4\",\"name\":\"RGB лампа\",\"minvalue\":\"0.0\",\"maxvalue\":\"16777216\"}],\"sensors\":[{\"topic\":\"duffelbag/voltage/00000000000000f5\",\"name\":\"Входное напряжение\",\"minvalue\":\"0\",\"maxvalue\":\"380\"},{\"topic\":\"duffelbag/power/00000000000000f6\",\"name\":\"Потребляемая мощность\",\"minvalue\":\"0\",\"maxvalue\":\"30\"}]}";
     }
 
 }
