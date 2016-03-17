@@ -23,7 +23,7 @@ public class SimpleMqttCallback implements MqttCallback {
         System.out.println(s+" "+mqttMessage.toString());
         System.out.println(sensors.sensorsSize());
         AddOrRefreshNode nodeFactory = new AddOrRefreshNode(s,mqttMessage);
-        nodeFactory.detectAndParseDuffelbagNode();
+        nodeFactory.detectDuffelbagNode();
     }
 
     @Override
