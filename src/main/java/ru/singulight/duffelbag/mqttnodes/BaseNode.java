@@ -14,6 +14,8 @@ public abstract class BaseNode {
     protected String name;
     /** MQTT address for this node */
     protected String mqttTopic;
+    /** Duffelbag node version*/
+    protected String version;
     /** True if all the parameters are known */
     protected boolean known;
     /** Note type */
@@ -40,5 +42,13 @@ public abstract class BaseNode {
     }
     public void setKnown(boolean known) {
         this.known = known;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }
