@@ -72,10 +72,6 @@ public class SensorNode extends BaseNode {
     }
     public void setTextValue(String textValue) { this.textValue = textValue; }
 
-    public NodeType getSensorType() {
-        return nodeType;
-    }
-
     public void configure(long sensorId,String name,String mqttTopic,NodeType type,float minValue,float maxValue) {
         super.id = sensorId;
         super.name = name;
