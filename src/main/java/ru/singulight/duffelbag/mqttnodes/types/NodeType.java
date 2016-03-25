@@ -25,6 +25,7 @@ public enum NodeType {
     RGB_LAMP,
     DIMMER,
     SWITCH,
+    OUTLET,
 /* Actuator types */
     RGB,
     RELAY,
