@@ -39,7 +39,7 @@ public class SensorNodeTest {
         assertEquals(sensorNode.getName(),"Out temperature");
         assertEquals(sensorNode.getMqttTopic(),"duffelbag/temperature/0000000000000100");
         assertEquals(sensorNode.isKnown(),false);
-        assertEquals(sensorNode.getSensorType(), NodeType.TEMPERATURE);
+        assertEquals(sensorNode.getNodeType(), NodeType.TEMPERATURE);
         assertEquals(sensorNode.getMinValue(),0,0);
         assertEquals(sensorNode.getMaxValue(),100,0);
     }
