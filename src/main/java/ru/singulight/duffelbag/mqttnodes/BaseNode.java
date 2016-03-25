@@ -17,7 +17,7 @@ public abstract class BaseNode {
     /** Duffelbag node version*/
     protected String version;
     /** True if all the parameters are known */
-    protected boolean known;
+    protected boolean known = false;
     /** Note type */
     protected NodeType nodeType;
 
@@ -35,6 +35,9 @@ public abstract class BaseNode {
 
     public String getMqttTopic() {
         return mqttTopic;
+    }
+    public void setMqttTopic(String mqttTopic) {
+        this.mqttTopic = mqttTopic;
     }
 
     public boolean isKnown() {
