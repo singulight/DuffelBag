@@ -29,7 +29,7 @@ public class MainHandler extends AbstractHandler {
 
         for (Map.Entry entry : AllNodes.allSensors.entrySet()) {
             SensorNode sensorNode = (SensorNode) entry.getValue();
-            httpOut.println("<tr> <td>" + entry.getKey() + "</td> <td>" + sensorNode.getSensorType() +
+            httpOut.println("<tr> <td>" + entry.getKey() + "</td> <td>" + sensorNode.getNodeType() +
                     "</td> <td>" + sensorNode.getValue() + "</td> </tr>");
         }
         httpOut.println("</table>");

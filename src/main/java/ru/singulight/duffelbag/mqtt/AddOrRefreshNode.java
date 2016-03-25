@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Base64;
+import java.util.Iterator;
 
 import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
 import static ru.singulight.duffelbag.mqttnodes.types.NodeType.RGB;
@@ -63,9 +64,12 @@ public class AddOrRefreshNode {
                 }
                 return;
             }
-
-
-
+            Thing thingObj = createThing(nodeType, nodeParts[2], mqttTopic);
+            if (thingObj != null) {
+                if (!allNodes.isThingExist(mqttTopic)) {
+                    allNodes.addThing(thingObj);
+                }
+            }
 
         } else {
             /**
@@ -82,7 +86,7 @@ public class AddOrRefreshNode {
         }
     }
 
-    private NodeType detectNodeType(String strType) {
+    public NodeType detectNodeType(String strType) {
         NodeType type;
         switch (strType) {
             case "temperature": type = TEMPERATURE; break;
@@ -104,6 +108,10 @@ public class AddOrRefreshNode {
             case "rgb": type = RGB; break;
             case "relay": type = RELAY; break;
             case "ac_voltage": type = AC_VOLTAGE; break;
+            case "rgb_lamp": type = RGB_LAMP; break;
+            case "switch": type  = SWITCH; break;
+            case "outlet": type = OUTLET; break;
+            case "dimmer": type = DIMMER; break;
             default: type = OTHER; break;
         }
         return type;
@@ -146,7 +154,6 @@ public class AddOrRefreshNode {
             default:
                 sensor = null;
         }
-        sensor.setKnown(false);
         return sensor;
     }
 
@@ -161,23 +168,103 @@ public class AddOrRefreshNode {
             default:
                 actuator = null;
         }
-        actuator.setKnown(false);
         return actuator;
     }
 
-    private void parseDuffelbagThingNode(Thing thing) throws ParseException {
+    private Thing createThing(NodeType type, String nodeId, String topic) throws NumberFormatException {
+        long localId = new BigInteger(nodeId , 16).longValue(); // May throw NumberFormatException
+        Thing thing = new Thing(localId, topic, type);
+        thing.setMqttTopic(topic);
+        switch (type) {
+            case RGB_LAMP:
+            case SWITCH:
+            case OUTLET:
+            case DIMMER:
+                thing.setConfigMessage(mqttMessage.toString());
+                try {
+                    parseDuffelbagThingConfMessage(thing);
+                } catch (Exception e) {
+                    e.printStackTrace();  // NEED TO REPLACE ON LOGGING SYSTEM
+                    thing = null;
+                }
+                break;
+            default:
+                thing = null;
+        }
+        return thing;
+    }
+
+    private void parseDuffelbagThingConfMessage(Thing thing) throws Exception {
         String message = thing.getConfigMessage();
         JSONParser jsonParser = new JSONParser();
         JSONObject mainObject = (JSONObject) jsonParser.parse(message);
 
         String version = (String) mainObject.get("ver");
+        thing.setVersion(version);
         if(version.equals("1.0")) {
-            long thingId = (long) mainObject.get("id");
-            String thingName = (String) mainObject.get("name");
-            String thingLocation = (String) mainObject.get("location");
+            thing.setName((String) mainObject.get("name"));
+            thing.setLocation((String) mainObject.get("location"));
             JSONArray thingActuators = (JSONArray) mainObject.get("actuators");
             JSONArray thingSensors = (JSONArray) mainObject.get("sensors");
-        }
 
+            Iterator actuatorArray = thingActuators.iterator();
+            while (actuatorArray.hasNext()) {
+                JSONObject actuatorObject = (JSONObject) actuatorArray.next();
+                String actuatorTopic = (String) actuatorObject.get("topic");
+                String actuatorName = (String) actuatorObject.get("name");
+                String actuatorMinValueStr = (String) actuatorObject.get("minvalue");
+                String actuatorMaxValueStr = (String) actuatorObject.get("maxvalue");
+                float actuatorMinValue = Float.parseFloat(actuatorMinValueStr);
+                float actuatorMaxValue = Float.parseFloat(actuatorMaxValueStr);
+                String [] splitTopic = actuatorTopic.split("/");
+                if (splitTopic[0].equals("duffelbag") && splitTopic.length == 3) {
+                    NodeType type = detectNodeType(splitTopic[1]);
+                    ActuatorNode actuator = createActuator(type, splitTopic[2], actuatorTopic);
+                    if (actuator == null) throw new ParseException(0);
+                    if(!allNodes.isActuatorExist(actuatorTopic)) {
+                        allNodes.addActuator(actuator);
+                        thing.addActuator(actuator);
+                    }
+                    ActuatorNode actuatorFromMap = allNodes.getActuator(actuatorTopic);
+                    if (!actuatorFromMap.isKnown()) {
+                        actuatorFromMap.setName(actuatorName);
+                        actuatorFromMap.setMinValue(actuatorMinValue);
+                        actuatorFromMap.setMaxValue(actuatorMaxValue);
+                        actuatorFromMap.setKnown(true);
+                        actuatorFromMap.setVersion(version);
+                    }
+                } else throw new ParseException(0);
+            }
+            Iterator sensorArray = thingSensors.iterator();
+            while (sensorArray.hasNext()) {
+                JSONObject sensorObject = (JSONObject) sensorArray.next();
+                String sensorTopic = (String) sensorObject.get("topic");
+                String sensorName = (String) sensorObject.get("name");
+                String sensorMinValueStr = (String) sensorObject.get("minvalue");
+                String sensorMaxValueStr = (String) sensorObject.get("maxvalue");
+                float sensorMinValue = Float.parseFloat(sensorMinValueStr);
+                float sensorMaxValue = Float.parseFloat(sensorMaxValueStr);
+
+                String [] splitTopic = sensorTopic.split("/");
+                if (splitTopic[0].equals("duffelbag") && splitTopic.length == 3) {
+                    NodeType type = detectNodeType(splitTopic[1]);
+                    SensorNode sensor = createSensor(type, splitTopic[2], sensorTopic);
+                    if (sensor == null) throw new ParseException(0);
+                    if(!allNodes.isSensorExist(sensorTopic)) {
+                        allNodes.addSensor(sensor);
+                        thing.addSensor(sensor);
+                    }
+                    SensorNode sensorFromMap = allNodes.getSensor(sensorTopic);
+                    if (!sensorFromMap.isKnown()) {
+                        sensorFromMap.setName(sensorName);
+                        sensorFromMap.setMinValue(sensorMinValue);
+                        sensorFromMap.setMaxValue(sensorMaxValue);
+                        sensorFromMap.setKnown(true);
+                        sensorFromMap.setVersion(version);
+                        sensorFromMap.setValue(sensorMinValue);
+                    }
+                } else throw new ParseException(0);
+            }
+        }
     }
 }
