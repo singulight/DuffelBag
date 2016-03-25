@@ -14,4 +14,21 @@ public class ActuatorNode extends BaseNode {
         super.mqttTopic = topic;
         super.nodeType = nodeType;
     }
+
+    public float getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(float minValue) {
+        this.minValue = minValue;
+    }
+
+    public float getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(float maxValue) {
+        this.maxValue = maxValue;
+    }
+
 }
