@@ -52,6 +52,14 @@ public class AllNodes {
         return (SensorNode) allSensors.get(topic);
     }
 
+    public  ActuatorNode getActuator(String topic) {
+        return (ActuatorNode) allActuators.get(topic);
+    }
+
+    public  Thing getThing(String topic) {
+        return (Thing) allThings.get(topic);
+    }
+
     /**
      * @return count of registered sensors
      **/
