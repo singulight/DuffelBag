@@ -17,6 +17,8 @@ import java.nio.ByteOrder;
 import java.util.Base64;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+
 import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
 import static ru.singulight.duffelbag.mqttnodes.types.NodeType.RGB;
 
@@ -33,6 +35,8 @@ public class AddOrRefreshNode {
     private NodeType nodeType = null;
     private int error;
     private AllNodes allNodes = AllNodes.getInstance();
+    private static final Logger log = Logger.getLogger(AddOrRefreshNode.class);
+
 
     public AddOrRefreshNode(String topic, MqttMessage message) {
         this.mqttTopic = topic;
@@ -261,7 +265,7 @@ public class AddOrRefreshNode {
                         sensorFromMap.setMaxValue(sensorMaxValue);
                         sensorFromMap.setKnown(true);
                         sensorFromMap.setVersion(version);
-                        sensorFromMap.setValue(sensorMinValue);
+
                     }
                 } else throw new ParseException(0);
             }

@@ -78,7 +78,6 @@ public class AddOrRefreshNodeTest {
         assertEquals(testingSensor.getNodeType(), TEXT);
         assertEquals(testingSensor.getTextValue(), "Test message");
         assertEquals(testingSensor.getMqttTopic(), "duffelbag/text/00000000000000f4");
-
     }
 
     @Test
@@ -115,11 +114,25 @@ public class AddOrRefreshNodeTest {
 
         String testJSON = "{\"ver\":\"1.0\",\"id\":\"00000000000000f5\",\"name\":\"RGB светильник\",\"location\":\"\",\"actuators\":[{\"topic\":\"duffelbag/rgb/00000000000000f6\",\"name\":\"RGB лампа\",\"minvalue\":\"0.0\",\"maxvalue\":\"1.0\"}],\"sensors\":[{\"topic\":\"duffelbag/voltage/00000000000000f7\",\"name\":\"Входное напряжение\",\"minvalue\":\"0\",\"maxvalue\":\"380\"},{\"topic\":\"duffelbag/power/00000000000000f8\",\"name\":\"Потребляемая мощность\",\"minvalue\":\"0\",\"maxvalue\":\"30\"}]}";
 
+        /* Create and add one sensor, included in this config message, before thing parse */
+
+        MqttMessage mqttMessage1 = new MqttMessage();
+        mqttMessage1.setPayload(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(3.2f).array());
+        AddOrRefreshNode parseSensor = new AddOrRefreshNode("duffelbag/power/00000000000000f8", mqttMessage1);
+        parseSensor.detectDuffelbagNode();
+        SensorNode sensorNode1 = allNodes.getSensor("duffelbag/power/00000000000000f8");
+        assertNotNull(sensorNode1);
+        assertEquals(sensorNode1.getValue(),3.2f,0);
+
+        /* Get THING MQTT packet */
+
         MqttMessage mqttMessage = new MqttMessage();
         mqttMessage.setPayload(testJSON.getBytes());
         AddOrRefreshNode addOrRefreshNode = new AddOrRefreshNode("duffelbag/outlet/00000000000000f5", mqttMessage);
         assertNotNull(addOrRefreshNode);
         addOrRefreshNode.detectDuffelbagNode();
+
+        /* Check Thing object */
 
         Thing testThing = allNodes.getThing("duffelbag/outlet/00000000000000f5");
         assertNotNull(testThing);
@@ -130,6 +143,8 @@ public class AddOrRefreshNodeTest {
         assertEquals(testThing.getMqttTopic(), "duffelbag/outlet/00000000000000f5");
         assertEquals(testThing.getName(),"RGB светильник");
         assertEquals(testThing.getLocation(),"");
+
+        /* Check first actuator */
 
         ActuatorNode firstActuator = allNodes.getActuator("duffelbag/rgb/00000000000000f6");
         assertNotNull(firstActuator);
@@ -142,6 +157,8 @@ public class AddOrRefreshNodeTest {
         assertEquals(firstActuator.isKnown(),true);
         assertEquals(firstActuator.getVersion(),"1.0");
 
+        /* Check first sensor */
+
         SensorNode firstSensor = allNodes.getSensor("duffelbag/voltage/00000000000000f7");
         assertNotNull(firstSensor);
         assertEquals(firstSensor.getId(), 0xf7);
@@ -153,6 +170,18 @@ public class AddOrRefreshNodeTest {
         assertEquals(firstSensor.isKnown(),true);
         assertEquals(firstSensor.getVersion(),"1.0");
 
-    }
+        /* Check second sensor (already exist) */
 
+        SensorNode secondSensor = allNodes.getSensor("duffelbag/power/00000000000000f8");
+        assertNotNull(secondSensor);
+        assertEquals(secondSensor.getId(), 0xf8);
+        assertEquals(secondSensor.getNodeType(),POWER);
+        assertEquals(secondSensor.getName(),"Потребляемая мощность");
+        assertEquals(secondSensor.getMqttTopic(),"duffelbag/power/00000000000000f8");
+        assertEquals(secondSensor.getMinValue(),0.0f,0);
+        assertEquals(secondSensor.getMaxValue(),30f,0);
+        assertEquals(secondSensor.getValue(),3.2f,0);
+        assertEquals(secondSensor.isKnown(),true);
+        assertEquals(secondSensor.getVersion(),"1.0");
+    }
 }
