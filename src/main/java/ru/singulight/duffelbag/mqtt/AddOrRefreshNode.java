@@ -20,7 +20,6 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
-import static ru.singulight.duffelbag.mqttnodes.types.NodeType.RGB;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 05.03.16.
@@ -43,14 +42,24 @@ public class AddOrRefreshNode {
         this.mqttMessage = message;
     }
 
-    public void detectDuffelbagNode() throws Exception {
+    public void detectDuffelbagNode()  {
 
         String [] nodeParts = mqttTopic.split("/");
         if (nodeParts[0].equals("duffelbag") && nodeParts.length == 3) {
             this.nodeType = detectNodeType(nodeParts[1]);
-            this.id = new BigInteger(nodeParts[2] , 16).longValue(); // May throw NumberFormatException
-
-            SensorNode sensorObj = createSensor(nodeType, nodeParts[2], mqttTopic);
+            try {
+                this.id = new BigInteger(nodeParts[2] , 16).longValue(); // May throw NumberFormatException
+            } catch (NumberFormatException nfe) {
+                log.error("Node parse error: wrong ID. Topic: "+mqttTopic);
+                return;
+            }
+            SensorNode sensorObj = null;
+            try {
+                sensorObj = createSensor(nodeType, nodeParts[2], mqttTopic);
+            } catch (Exception e) {
+                log.error("Node parse error in sensor case. Topic: "+mqttTopic);
+                return;
+            }
             if (sensorObj != null) {
                 if(!allNodes.isSensorExist(mqttTopic))
                     allNodes.addSensor(sensorObj);
@@ -61,18 +70,31 @@ public class AddOrRefreshNode {
                 }
                 return;
             }
-            ActuatorNode actuatorObj = createActuator(nodeType, nodeParts[2], mqttTopic);
+            ActuatorNode actuatorObj = null;
+            try {
+                actuatorObj = createActuator(nodeType, nodeParts[2], mqttTopic);
+            } catch (Exception e) {
+                log.error("Node parse error in actuator case. Topic: "+mqttTopic);
+                return;
+            }
             if (actuatorObj != null) {
                 if(!allNodes.isActuatorExist(mqttTopic)) {
                     allNodes.addActuator(actuatorObj);
                 }
                 return;
             }
-            Thing thingObj = createThing(nodeType, nodeParts[2], mqttTopic);
+            Thing thingObj = null;
+            try {
+                thingObj = createThing(nodeType, nodeParts[2], mqttTopic);
+            } catch (Exception e) {
+                log.error("Node parse error in thing case. Topic: "+mqttTopic);
+                return;
+            }
             if (thingObj != null) {
                 if (!allNodes.isThingExist(mqttTopic)) {
                     allNodes.addThing(thingObj);
                 }
+                return;
             }
 
         } else {
@@ -80,9 +102,11 @@ public class AddOrRefreshNode {
              * Parse sensor with non duffelbag format
              * */
             if(!allNodes.isSensorExist(mqttTopic)) {
+                log.info("Add non duffelbag unknown format node: "+mqttTopic);
                 SensorNode otherNode = new SensorNode(404, mqttTopic, NodeType.OTHER);
                 otherNode.setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
                 otherNode.setKnown(false);
+                otherNode.setVersion("0");
                 allNodes.addSensor(otherNode);
             } else {
                 allNodes.getSensor(mqttTopic).setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
@@ -188,7 +212,7 @@ public class AddOrRefreshNode {
                 try {
                     parseDuffelbagThingConfMessage(thing);
                 } catch (Exception e) {
-                    e.printStackTrace();  // NEED TO REPLACE ON LOGGING SYSTEM
+                    log.error("Thing config message parse error. Topic: "+mqttTopic+" Message: "+mqttMessage.toString());
                     thing = null;
                 }
                 break;
