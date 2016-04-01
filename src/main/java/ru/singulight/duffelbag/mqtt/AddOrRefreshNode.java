@@ -15,7 +15,6 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Base64;
-import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
@@ -99,8 +98,8 @@ public class AddOrRefreshNode {
 
         } else {
             /**
-             * Parse sensor with non duffelbag format
-             * */
+                        * Parse sensor with non duffelbag format
+                        * */
             if(!allNodes.isSensorExist(mqttTopic)) {
                 log.info("Add non duffelbag unknown format node: "+mqttTopic);
                 SensorNode otherNode = new SensorNode(404, mqttTopic, NodeType.OTHER);
@@ -235,21 +234,20 @@ public class AddOrRefreshNode {
             JSONArray thingActuators = (JSONArray) mainObject.get("actuators");
             JSONArray thingSensors = (JSONArray) mainObject.get("sensors");
 
-            Iterator actuatorArray = thingActuators.iterator();
-            while (actuatorArray.hasNext()) {
-                JSONObject actuatorObject = (JSONObject) actuatorArray.next();
+            for (Object thingActuator : thingActuators) {
+                JSONObject actuatorObject = (JSONObject) thingActuator;
                 String actuatorTopic = (String) actuatorObject.get("topic");
                 String actuatorName = (String) actuatorObject.get("name");
                 String actuatorMinValueStr = (String) actuatorObject.get("minvalue");
                 String actuatorMaxValueStr = (String) actuatorObject.get("maxvalue");
                 float actuatorMinValue = Float.parseFloat(actuatorMinValueStr);
                 float actuatorMaxValue = Float.parseFloat(actuatorMaxValueStr);
-                String [] splitTopic = actuatorTopic.split("/");
+                String[] splitTopic = actuatorTopic.split("/");
                 if (splitTopic[0].equals("duffelbag") && splitTopic.length == 3) {
                     NodeType type = detectNodeType(splitTopic[1]);
                     ActuatorNode actuator = createActuator(type, splitTopic[2], actuatorTopic);
                     if (actuator == null) throw new ParseException(0);
-                    if(!allNodes.isActuatorExist(actuatorTopic)) {
+                    if (!allNodes.isActuatorExist(actuatorTopic)) {
                         allNodes.addActuator(actuator);
                         thing.addActuator(actuator);
                     }
@@ -263,9 +261,8 @@ public class AddOrRefreshNode {
                     }
                 } else throw new ParseException(0);
             }
-            Iterator sensorArray = thingSensors.iterator();
-            while (sensorArray.hasNext()) {
-                JSONObject sensorObject = (JSONObject) sensorArray.next();
+            for (Object thingSensor : thingSensors) {
+                JSONObject sensorObject = (JSONObject) thingSensor;
                 String sensorTopic = (String) sensorObject.get("topic");
                 String sensorName = (String) sensorObject.get("name");
                 String sensorMinValueStr = (String) sensorObject.get("minvalue");
@@ -273,12 +270,12 @@ public class AddOrRefreshNode {
                 float sensorMinValue = Float.parseFloat(sensorMinValueStr);
                 float sensorMaxValue = Float.parseFloat(sensorMaxValueStr);
 
-                String [] splitTopic = sensorTopic.split("/");
+                String[] splitTopic = sensorTopic.split("/");
                 if (splitTopic[0].equals("duffelbag") && splitTopic.length == 3) {
                     NodeType type = detectNodeType(splitTopic[1]);
                     SensorNode sensor = createSensor(type, splitTopic[2], sensorTopic);
                     if (sensor == null) throw new ParseException(0);
-                    if(!allNodes.isSensorExist(sensorTopic)) {
+                    if (!allNodes.isSensorExist(sensorTopic)) {
                         allNodes.addSensor(sensor);
                         thing.addSensor(sensor);
                     }

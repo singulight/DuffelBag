@@ -2,6 +2,8 @@ package ru.singulight.duffelbag.mqttnodes;
 
 import ru.singulight.duffelbag.mqttnodes.types.NodeType;
 
+import java.util.Observable;
+
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
@@ -20,6 +22,8 @@ public abstract class BaseNode {
     protected boolean known = false;
     /** Note type */
     protected NodeType nodeType;
+    /** Observable object */
+    protected Observable observable = new Observable();
 
     public NodeType getNodeType() {
         return nodeType;
@@ -54,4 +58,13 @@ public abstract class BaseNode {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    public Observable getObservable() {
+        return observable;
+    }
+
+    public void setObservable(Observable observable) {
+        this.observable = observable;
+    }
+
 }

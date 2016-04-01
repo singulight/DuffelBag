@@ -1,42 +1,15 @@
 package ru.singulight.duffelbag.mqttnodes.actions;
 
-import ru.singulight.duffelbag.mqttnodes.ActuatorNode;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class SetOfRulesSensorAction implements ISensorAction {
-
-    private int actionId;
-    private ActuatorNode targetActuator;
+public class SetOfRulesSensorAction implements Observer {
 
     @Override
-    public void setActionId(int actionId) {
-        this.actionId = actionId;
-    }
-
-    @Override
-    public int getActionId() {
-        return actionId;
-    }
-
-    @Override
-    public void setTargetActuator(ActuatorNode ta) {
-        this.targetActuator = ta;
-    }
-
-    @Override
-    public ActuatorNode getTargetActuator() {
-        return this.targetActuator;
-    }
-
-    @Override
-    public void go(float value) {
-
-    }
-
-    @Override
-    public void go(String value) {
+    public void update(Observable o, Object arg) {
 
     }
 }

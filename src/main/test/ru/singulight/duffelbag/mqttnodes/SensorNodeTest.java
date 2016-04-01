@@ -3,13 +3,7 @@ package ru.singulight.duffelbag.mqttnodes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.singulight.duffelbag.mqttnodes.actions.ISensorAction;
-import ru.singulight.duffelbag.mqttnodes.actions.LuaScriptSensorAction;
-import ru.singulight.duffelbag.mqttnodes.actions.SetOfRulesSensorAction;
 import ru.singulight.duffelbag.mqttnodes.types.NodeType;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -44,25 +38,4 @@ public class SensorNodeTest {
         assertEquals(sensorNode.getMaxValue(),100,0);
     }
 
-    @Test
-    public void TestActions() {
-        ISensorAction action1 = new LuaScriptSensorAction();
-        ISensorAction action2 = new LuaScriptSensorAction();
-        ISensorAction action3 = new SetOfRulesSensorAction();
-        List<ISensorAction> ref = new LinkedList<>();
-        ref.add(action1);
-        ref.add(action2);
-        ref.add(action3);
-        sensorNode.addAction(action1);
-        sensorNode.addAction(action2);
-        sensorNode.addAction(action3);
-        assertEquals(sensorNode.getSensorActions(),ref);
-        ref.remove(action1);
-        ref.remove(action2);
-        ref.remove(action3);
-        sensorNode.removeAction(action1);
-        sensorNode.removeAction(action2);
-        sensorNode.removeAction(action3);
-        assertEquals(sensorNode.getSensorActions(),ref);
-    }
 }
