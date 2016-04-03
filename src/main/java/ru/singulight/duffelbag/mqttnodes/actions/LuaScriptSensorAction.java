@@ -23,13 +23,14 @@ public class LuaScriptSensorAction implements Actionable {
     @Override
     public void update(Observable o, Object arg) {
         SensorNode asd = new SensorNode(10,"duffelbag/voltage/", NodeType.VOLTAGE);
-        script = "amm = asd:getId();";
+        script = "asd:setValue(1);";
         try {
             lua.put("asd",asd);
             lua.eval(script);
-            log.info("y= "+lua.get("amm"));
+            //asd = (SensorNode) lua.get("gov");
+            log.info(asd.getValue());
         } catch (Exception e) {
-            log.error("Lua script error: "+e.getMessage());
+            log.error("Lua script error: ",e);
         }
     }
 
