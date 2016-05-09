@@ -1,6 +1,6 @@
-package ru.singulight.duffelbag.mqttnodes;
+package ru.singulight.duffelbag.nodes;
 
-import ru.singulight.duffelbag.mqttnodes.types.NodeType;
+import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.util.Observable;
 

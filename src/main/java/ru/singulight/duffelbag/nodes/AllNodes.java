@@ -1,11 +1,11 @@
-package ru.singulight.duffelbag.mqttnodes;
+package ru.singulight.duffelbag.nodes;
 
 import java.util.Hashtable;
 import java.util.Map;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
- * Array of all mqttnodes, actuators and things
+ * Array of all nodes, actuators and things
  */
 public class AllNodes {
 

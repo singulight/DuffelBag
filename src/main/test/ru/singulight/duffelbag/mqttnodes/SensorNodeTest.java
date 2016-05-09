@@ -1,9 +1,9 @@
-package ru.singulight.duffelbag.mqttnodes;
+package ru.singulight.duffelbag.nodes;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.singulight.duffelbag.mqttnodes.types.NodeType;
+import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import static org.junit.Assert.*;
 

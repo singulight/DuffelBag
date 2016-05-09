@@ -1,10 +1,9 @@
-package ru.singulight.duffelbag.mqttnodes;
+package ru.singulight.duffelbag.nodes;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import ru.singulight.duffelbag.mqttnodes.types.*;
+import ru.singulight.duffelbag.nodes.types.*;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 18.12.15.
  *

@@ -4,13 +4,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.singulight.duffelbag.mqttnodes.ActuatorNode;
-import ru.singulight.duffelbag.mqttnodes.AllNodes;
-import ru.singulight.duffelbag.mqttnodes.SensorNode;
-import ru.singulight.duffelbag.mqttnodes.Thing;
+import ru.singulight.duffelbag.nodes.ActuatorNode;
+import ru.singulight.duffelbag.nodes.AllNodes;
+import ru.singulight.duffelbag.nodes.SensorNode;
+import ru.singulight.duffelbag.nodes.Thing;
 
 import static org.junit.Assert.fail;
-import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
+import static ru.singulight.duffelbag.nodes.types.NodeType.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

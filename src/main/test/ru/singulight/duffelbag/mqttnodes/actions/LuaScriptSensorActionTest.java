@@ -1,4 +1,4 @@
-package ru.singulight.duffelbag.mqttnodes.actions;
+package ru.singulight.duffelbag.actions;
 
 import org.junit.Test;
 

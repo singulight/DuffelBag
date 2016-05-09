@@ -1,6 +1,6 @@
-package ru.singulight.duffelbag.mqttnodes;
+package ru.singulight.duffelbag.nodes;
 
-import ru.singulight.duffelbag.mqttnodes.types.*;
+import ru.singulight.duffelbag.nodes.types.*;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 17.12.15.

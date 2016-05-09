@@ -1,4 +1,4 @@
-package ru.singulight.duffelbag.mqttnodes.types;
+package ru.singulight.duffelbag.nodes.types;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 11.01.16.

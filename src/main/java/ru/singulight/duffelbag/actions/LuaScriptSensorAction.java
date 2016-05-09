@@ -1,14 +1,11 @@
-package ru.singulight.duffelbag.mqttnodes.actions;
-
-import org.luaj.vm2.lib.jse.JseMathLib;
+package ru.singulight.duffelbag.actions;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Observable;
 import org.apache.log4j.Logger;
-import ru.singulight.duffelbag.mqttnodes.SensorNode;
-import ru.singulight.duffelbag.mqttnodes.types.NodeType;
+import ru.singulight.duffelbag.nodes.SensorNode;
+import ru.singulight.duffelbag.nodes.types.NodeType;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.

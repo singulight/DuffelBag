@@ -5,11 +5,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import ru.singulight.duffelbag.mqttnodes.ActuatorNode;
-import ru.singulight.duffelbag.mqttnodes.SensorNode;
-import ru.singulight.duffelbag.mqttnodes.AllNodes;
-import ru.singulight.duffelbag.mqttnodes.Thing;
-import ru.singulight.duffelbag.mqttnodes.types.NodeType;
+import ru.singulight.duffelbag.nodes.ActuatorNode;
+import ru.singulight.duffelbag.nodes.SensorNode;
+import ru.singulight.duffelbag.nodes.AllNodes;
+import ru.singulight.duffelbag.nodes.Thing;
+import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -18,7 +18,7 @@ import java.util.Base64;
 
 import org.apache.log4j.Logger;
 
-import static ru.singulight.duffelbag.mqttnodes.types.NodeType.*;
+import static ru.singulight.duffelbag.nodes.types.NodeType.*;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 05.03.16.

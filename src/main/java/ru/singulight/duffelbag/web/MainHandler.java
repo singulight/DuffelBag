@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import ru.singulight.duffelbag.mqttnodes.*;
+import ru.singulight.duffelbag.nodes.*;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 03.03.16.
