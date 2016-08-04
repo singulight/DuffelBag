@@ -18,7 +18,7 @@ public class CreateDatabaseImpl implements CreateDatabase {
                 "CREATE TABLE IF NOT EXISTS node (" +
                 "id IDENTITY, " +
                 "name TEXT," +
-                "topic VARCHAR(255) PRIMARY KEY, " +
+                "topic VARCHAR(255) UNIQUE, " +
                 "version VARCHAR(16), " +
                 "known BOOLEAN, " +
                 "nodetype INT," +
@@ -35,6 +35,9 @@ public class CreateDatabaseImpl implements CreateDatabase {
                 "time TIMESTAMP," +
                 "value REAL," +
                 "textValue TEXT)"
+        );
+        jdbcTemplate.execute(
+                "CREATE TABLE IF NOT EXISTS "
         );
     }
 }
