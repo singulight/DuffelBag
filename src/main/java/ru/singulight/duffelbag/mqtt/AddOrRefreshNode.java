@@ -5,10 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import ru.singulight.duffelbag.nodes.ActuatorNode;
-import ru.singulight.duffelbag.nodes.SensorNode;
-import ru.singulight.duffelbag.nodes.AllNodes;
-import ru.singulight.duffelbag.nodes.Thing;
+import ru.singulight.duffelbag.nodes.*;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.math.BigInteger;
@@ -33,6 +30,7 @@ public class AddOrRefreshNode {
     private NodeType nodeType = null;
     private int error;
     private AllNodes allNodes = AllNodes.getInstance();
+    private IdCounter idCounter = IdCounter.getInstance();
     private static final Logger log = Logger.getLogger(AddOrRefreshNode.class);
 
 
@@ -60,9 +58,15 @@ public class AddOrRefreshNode {
                 return;
             }
             if (sensorObj != null) {
-                if(!allNodes.isSensorExist(mqttTopic))
+                if(!allNodes.isSensorExist(mqttTopic)) {
+                    try {
+                        sensorObj.setId(idCounter.checkDbId(sensorObj.getId()));
+                    } catch (Exception e) {
+                        log.error("Id count is too big in create sensor case. Topic: "+mqttTopic);
+                        return;
+                    }
                     allNodes.addSensor(sensorObj);
-                else {
+                } else {
                     SensorNode sn = allNodes.getSensor(mqttTopic);
                     sn.setValue(floatValue);
                     sn.setTextValue(strValue);
@@ -78,6 +82,11 @@ public class AddOrRefreshNode {
             }
             if (actuatorObj != null) {
                 if(!allNodes.isActuatorExist(mqttTopic)) {
+                    try {
+                        actuatorObj.setId(idCounter.checkDbId(actuatorObj.getId()));
+                    } catch (Exception e) {
+                        log.error("Id count is too big in create actuator case. Topic: "+mqttTopic);
+                    }
                     allNodes.addActuator(actuatorObj);
                 }
                 return;
@@ -91,6 +100,11 @@ public class AddOrRefreshNode {
             }
             if (thingObj != null) {
                 if (!allNodes.isThingExist(mqttTopic)) {
+                    try {
+                        thingObj.setId(idCounter.checkDbId(thingObj.getId()));
+                    } catch (Exception e) {
+                        log.error("Id count is too big in create thing case. Topic: "+mqttTopic);
+                    }
                     allNodes.addThing(thingObj);
                 }
                 return;
@@ -98,15 +112,20 @@ public class AddOrRefreshNode {
 
         } else {
             /**
-                        * Parse sensor with non duffelbag format
-                        * */
+            * Parse sensor with non duffelbag format
+            * */
             if(!allNodes.isSensorExist(mqttTopic)) {
                 log.info("Add non duffelbag unknown format node: "+mqttTopic);
                 SensorNode otherNode = new SensorNode(404, mqttTopic, NodeType.OTHER);
                 otherNode.setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
                 otherNode.setKnown(false);
                 otherNode.setVersion("0");
-                allNodes.addSensor(otherNode);
+                try {
+                    otherNode.setId(idCounter.getNewId());
+                    allNodes.addSensor(otherNode);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
             } else {
                 allNodes.getSensor(mqttTopic).setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
             }
@@ -146,6 +165,7 @@ public class AddOrRefreshNode {
 
     private SensorNode createSensor(NodeType type, String nodeId, String topic) throws Exception {
         long localId = new BigInteger(nodeId , 16).longValue(); // May throw NumberFormatException
+
         SensorNode sensor = new SensorNode(localId, topic, type);
         switch (type) {
             case TEMPERATURE:

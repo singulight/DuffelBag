@@ -9,15 +9,12 @@ import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.SensorNode;
 import ru.singulight.duffelbag.nodes.Thing;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static ru.singulight.duffelbag.nodes.types.NodeType.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 05.03.16.
@@ -41,21 +38,30 @@ public class AddOrRefreshNodeTest {
 
         MqttMessage mqttMessage = new MqttMessage();
         assertNotNull(allNodes);
-
         mqttMessage.setPayload(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(10.2f).array());
-
         AddOrRefreshNode addOrRefreshNode = new AddOrRefreshNode("duffelbag/temperature/00000000000000f3", mqttMessage);
         assertNotNull(addOrRefreshNode);
-
         addOrRefreshNode.detectDuffelbagNode();
-
         SensorNode testingSensor = allNodes.getSensor("duffelbag/temperature/00000000000000f3");
         assertNotNull(testingSensor);
-
         assertEquals(testingSensor.getId(), 0xf3);
         assertEquals(testingSensor.getNodeType(), TEMPERATURE);
         assertEquals(testingSensor.getValue(), 10.2f, 0);
         assertEquals(testingSensor.getMqttTopic(), "duffelbag/temperature/00000000000000f3");
+
+        /*Create other sensor with the same ID in topic*/
+
+        addOrRefreshNode = new AddOrRefreshNode("duffelbag/water_flow/00000000000000f3", mqttMessage);
+        assertNotNull(addOrRefreshNode);
+        addOrRefreshNode.detectDuffelbagNode();
+        testingSensor = allNodes.getSensor("duffelbag/water_flow/00000000000000f3");
+        assertNotNull(testingSensor);
+        long a = testingSensor.getId();
+        assertTrue((a>=0x400000000000000L)&&(a<=0x5ffffffffffffffL));
+        assertEquals(testingSensor.getNodeType(), WATER_FLOW);
+        assertEquals(testingSensor.getValue(), 10.2f, 0);
+        assertEquals(testingSensor.getMqttTopic(), "duffelbag/water_flow/00000000000000f3");
+
     }
 
     @Test

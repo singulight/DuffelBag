@@ -10,12 +10,14 @@ import java.util.Observable;
  */
 public abstract class BaseNode {
 
+
+
     /** Sensor id*/
-    protected long id;
-    /** Sensor name string */
-    protected String name;
+    protected Long id;
     /** MQTT address for this node */
     protected String mqttTopic;
+
+    protected String name;
     /** Duffelbag node version*/
     protected String version;
     /** True if all the parameters are known */
@@ -30,6 +32,9 @@ public abstract class BaseNode {
     }
     public long getId() {
         return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -54,7 +59,6 @@ public abstract class BaseNode {
     public String getVersion() {
         return version;
     }
-
     public void setVersion(String version) {
         this.version = version;
     }
@@ -62,7 +66,6 @@ public abstract class BaseNode {
     public Observable getObservable() {
         return observable;
     }
-
     public void setObservable(Observable observable) {
         this.observable = observable;
     }

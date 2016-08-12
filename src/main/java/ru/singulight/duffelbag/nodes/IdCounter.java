@@ -40,4 +40,8 @@ public class IdCounter {
         }
         return newId;
     }
+    public void deleteId(Long id) {
+        knownDbIds.remove(id);
+        knownIds.remove(id);
+    }
 }
