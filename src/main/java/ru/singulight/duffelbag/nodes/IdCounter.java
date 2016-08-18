@@ -1,5 +1,6 @@
 package ru.singulight.duffelbag.nodes;
 
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class IdCounter {
 
     public Long getNewId () throws Exception {
         lastId++;
+        // TODO: make search binary tree
         if(knownIds.contains(lastId)) {
             lastId++;
             if (lastId > 0x5fffffffffffffffL) throw new Exception("IdCounter: New ID too big");
