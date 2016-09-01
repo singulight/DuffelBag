@@ -21,10 +21,11 @@ import static org.junit.Assert.*;
 public class CreateDatabaseH2Test {
 
     ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+    CreateDatabase cdb = (CreateDatabase) ctx.getBean("createDatabase");
 
     @Test
     public void testCreate() throws Exception {
-        CreateDatabase cdb = (CreateDatabase) ctx.getBean("createDatabase");
+
         cdb.create();
     }
 }

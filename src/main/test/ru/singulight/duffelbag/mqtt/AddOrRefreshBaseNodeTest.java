@@ -4,10 +4,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.singulight.duffelbag.nodes.*;
 import ru.singulight.duffelbag.nodes.ActuatorNode;
-import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.SensorNode;
-import ru.singulight.duffelbag.nodes.Thing;
 
 import static org.junit.Assert.*;
 import static ru.singulight.duffelbag.nodes.types.NodeType.*;
@@ -19,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 05.03.16.
  */
-public class AddOrRefreshNodeTest {
+public class AddOrRefreshBaseNodeTest {
 
 
     AllNodes allNodes = AllNodes.getInstance();

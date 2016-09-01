@@ -52,7 +52,7 @@ public class AllNodes {
         return (SensorNode) allSensors.get(topic);
     }
 
-    public  ActuatorNode getActuator(String topic) {
+    public ActuatorNode getActuator(String topic) {
         return (ActuatorNode) allActuators.get(topic);
     }
 

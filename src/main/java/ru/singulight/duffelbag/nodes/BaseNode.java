@@ -8,15 +8,15 @@ import java.util.Observable;
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
  */
-public class Node {
+public class BaseNode {
 
-    public Node(long sensorId, String mqttTopic, NodeType type) {
+    public BaseNode(long sensorId, String mqttTopic, NodeType type) {
         this.id = sensorId;
         this.mqttTopic = mqttTopic;
         this.nodeType = type;
     }
 
-    public Node() {
+    public BaseNode() {
 
     }
 

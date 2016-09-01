@@ -17,7 +17,8 @@
     <bean id="nodeDaoH2" class="ru.singulight.duffelbag.dao.NodeDaoH2">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
-    <bean class="ru.singulight.duffelbag.dao.CreateDatabaseH2" id="createDatabase">
+
+    <bean id="createDatabase" class="ru.singulight.duffelbag.dao.CreateDatabaseH2">
         <constructor-arg ref="jdbcTemplate"/>
     </bean>
 

@@ -47,14 +47,14 @@ public class AddOrRefreshNode {
             try {
                 this.id = new BigInteger(nodeParts[2] , 16).longValue(); // May throw NumberFormatException
             } catch (NumberFormatException nfe) {
-                log.error("Node parse error: wrong ID. Topic: "+mqttTopic);
+                log.error("BaseNode parse error: wrong ID. Topic: "+mqttTopic);
                 return;
             }
             SensorNode sensorObj = null;
             try {
                 sensorObj = createSensor(nodeType, nodeParts[2], mqttTopic);
             } catch (Exception e) {
-                log.error("Node parse error in sensor case. Topic: "+mqttTopic);
+                log.error("BaseNode parse error in sensor case. Topic: "+mqttTopic);
                 return;
             }
             if (sensorObj != null) {
@@ -77,7 +77,7 @@ public class AddOrRefreshNode {
             try {
                 actuatorObj = createActuator(nodeType, nodeParts[2], mqttTopic);
             } catch (Exception e) {
-                log.error("Node parse error in actuator case. Topic: "+mqttTopic);
+                log.error("BaseNode parse error in actuator case. Topic: "+mqttTopic);
                 return;
             }
             if (actuatorObj != null) {
@@ -95,7 +95,7 @@ public class AddOrRefreshNode {
             try {
                 thingObj = createThing(nodeType, nodeParts[2], mqttTopic);
             } catch (Exception e) {
-                log.error("Node parse error in thing case. Topic: "+mqttTopic);
+                log.error("BaseNode parse error in thing case. Topic: "+mqttTopic);
                 return;
             }
             if (thingObj != null) {

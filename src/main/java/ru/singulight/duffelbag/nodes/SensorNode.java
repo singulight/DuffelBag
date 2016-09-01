@@ -8,7 +8,7 @@ import ru.singulight.duffelbag.nodes.types.*;
  *
  *
  */
-public class SensorNode extends Node {
+public class SensorNode extends BaseNode {
 
     public SensorNode() {
     }

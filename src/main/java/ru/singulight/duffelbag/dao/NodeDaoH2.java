@@ -2,18 +2,16 @@ package ru.singulight.duffelbag.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.singulight.duffelbag.actions.LuaScriptAction;
-import ru.singulight.duffelbag.nodes.ActuatorNode;
-import ru.singulight.duffelbag.nodes.Node;
+import ru.singulight.duffelbag.nodes.*;
+import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.SensorNode;
-import ru.singulight.duffelbag.nodes.Thing;
+
+import java.util.Date;
 
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 21.07.16.
  */
 public class NodeDaoH2 implements NodeDao {
-
-
-
 
     private JdbcTemplate jdbcTemplate;
 
@@ -43,8 +41,9 @@ public class NodeDaoH2 implements NodeDao {
     }
 
     @Override
-    public void saveValue(Node node) {
-
+    public void saveValue(BaseNode node) {
+        String insertValueSql = "INSERT INTO nodeValues (idNode, time, value, textValue) VALUES (?,?,?,?)";
+        jdbcTemplate.update(insertValueSql, new Object[]{node.getId(), new Date(), node.getValue(), node.getTextValue()});
     }
 
     @Override

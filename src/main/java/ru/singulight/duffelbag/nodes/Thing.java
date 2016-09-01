@@ -8,7 +8,7 @@ import ru.singulight.duffelbag.nodes.types.*;
  * Created by Grigorii Nizovoi info@singulight.ru on 18.12.15.
  *
  */
-public class Thing extends Node {
+public class Thing extends BaseNode {
 
     private String configMessage;
     private String location;

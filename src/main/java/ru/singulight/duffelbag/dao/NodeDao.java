@@ -2,7 +2,7 @@ package ru.singulight.duffelbag.dao;
 
 import ru.singulight.duffelbag.actions.LuaScriptAction;
 import ru.singulight.duffelbag.nodes.ActuatorNode;
-import ru.singulight.duffelbag.nodes.Node;
+import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.SensorNode;
 import ru.singulight.duffelbag.nodes.Thing;
 
@@ -18,7 +18,7 @@ public interface NodeDao {
     void saveActuator(ActuatorNode actuatorNode);
     void saveThing(Thing thing);
 
-    void saveValue(Node node);
+    void saveValue(BaseNode node);
 
     void saveLuaScript(LuaScriptAction action);
     LuaScriptAction getLuaScript (Long id);
