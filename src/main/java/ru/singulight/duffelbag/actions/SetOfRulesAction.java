@@ -6,7 +6,7 @@ import java.util.Observer;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class SetOfRulesSensorAction implements Observer {
+public class SetOfRulesAction implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {

@@ -8,8 +8,17 @@ import java.util.Observable;
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
  */
-public abstract class BaseNode {
+public class Node {
 
+    public Node(long sensorId, String mqttTopic, NodeType type) {
+        this.id = sensorId;
+        this.mqttTopic = mqttTopic;
+        this.nodeType = type;
+    }
+
+    public Node() {
+
+    }
 
 
     /** Sensor id*/
@@ -24,6 +33,14 @@ public abstract class BaseNode {
     protected boolean known = false;
     /** Note type */
     protected NodeType nodeType;
+    /** Sensor value if no NodeType.TEXT type. Must be synchronized to remote sensor.*/
+    private float value = 0.0f;
+    /** Minimum value of sensor */
+    private float minValue = 0.0f;
+    /** Maximum value of sensor */
+    private float maxValue = 100.0f;
+    /** Sensor value if NodeType.TEXT type. Must be synchronized to remote sensor.*/
+    private String textValue = "";
     /** Observable object */
     protected Observable observable = new Observable();
 
@@ -62,6 +79,29 @@ public abstract class BaseNode {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    public float getValue() {
+        return value;
+    }
+    public void setValue(float value) {
+        this.value = value;
+        observable.notifyObservers();
+    }
+
+    public float getMinValue() {
+        return minValue;
+    }
+    public void setMinValue (float minValue) { this.minValue = minValue; }
+
+    public float getMaxValue() {
+        return maxValue;
+    }
+    public void setMaxValue(float maxValue) { this.maxValue = maxValue; }
+
+    public String getTextValue() {
+        return textValue;
+    }
+    public void setTextValue(String textValue) { this.textValue = textValue; }
 
     public Observable getObservable() {
         return observable;

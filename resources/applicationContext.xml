@@ -14,10 +14,10 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
-    <bean id="sensorDaoImpl" class="ru.singulight.duffelbag.dao.SensorDaoImpl">
+    <bean id="nodeDaoH2" class="ru.singulight.duffelbag.dao.NodeDaoH2">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
-    <bean class="ru.singulight.duffelbag.dao.CreateDatabaseImpl" id="createDatabase">
+    <bean class="ru.singulight.duffelbag.dao.CreateDatabaseH2" id="createDatabase">
         <constructor-arg ref="jdbcTemplate"/>
     </bean>
 

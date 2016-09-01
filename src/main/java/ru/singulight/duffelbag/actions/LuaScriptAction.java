@@ -10,11 +10,12 @@ import ru.singulight.duffelbag.nodes.types.NodeType;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class LuaScriptSensorAction implements Actionable {
+public class LuaScriptAction implements Actionable {
 
-    private static final Logger log = Logger.getLogger(LuaScriptSensorAction.class);
+    private static final Logger log = Logger.getLogger(LuaScriptAction.class);
     private ScriptEngine lua = new ScriptEngineManager().getEngineByName("luaj");
 
+    private Long id;
     private String script;
 
     @Override
@@ -38,4 +39,13 @@ public class LuaScriptSensorAction implements Actionable {
     public void setScript(String script) {
         this.script = script;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
