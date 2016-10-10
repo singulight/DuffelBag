@@ -10,7 +10,7 @@ import ru.singulight.duffelbag.nodes.types.NodeType;
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 01.09.16.
  */
-public class BaseNodeDaoH2Test {
+public class NodeDaoH2Test {
 
     ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
     NodeDaoH2 cdb = (NodeDaoH2) ctx.getBean("nodeDaoH2");

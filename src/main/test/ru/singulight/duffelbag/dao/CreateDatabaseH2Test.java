@@ -9,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.BootstrapWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +22,6 @@ public class CreateDatabaseH2Test {
 
     ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
     CreateDatabase cdb = (CreateDatabase) ctx.getBean("createDatabase");
-
     @Test
     public void testCreate() throws Exception {
 
