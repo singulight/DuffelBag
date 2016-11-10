@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.*;
 import org.eclipse.jetty.webapp.*;
+import ru.singulight.duffelbag.web.websocket.SocketHandler;
 
 
 /**
@@ -54,41 +55,42 @@ public class WebServer
 
     private HandlerCollection createHandlers()
     {
-        WebAppContext _ctx = new WebAppContext();
-        _ctx.setContextPath("/");
-        _ctx.setResourceBase("webapp");
+        WebAppContext ctx = new WebAppContext();
+        ctx.setContextPath("/");
+        ctx.setResourceBase("webapp");
 
 
-        List<Handler> _handlers = new ArrayList<Handler>();
 
-        _handlers.add(_ctx);
+        List<Handler> handlers = new ArrayList<Handler>();
 
-        HandlerList _contexts = new HandlerList();
-        _contexts.setHandlers(_handlers.toArray(new Handler[0]));
+        handlers.add(ctx);
 
-        RequestLogHandler _log = new RequestLogHandler();
-        _log.setRequestLog(createRequestLog());
+        HandlerList contexts = new HandlerList();
+        contexts.setHandlers(handlers.toArray(new Handler[0]));
 
-        HandlerCollection _result = new HandlerCollection();
-        _result.setHandlers(new Handler[] {_contexts, _log});
+        RequestLogHandler log = new RequestLogHandler();
+        log.setRequestLog(createRequestLog());
 
-        return _result;
+        HandlerCollection result = new HandlerCollection();
+        result.setHandlers(new Handler[] {new SocketHandler(), contexts, log});
+
+        return result;
     }
 
     private RequestLog createRequestLog()
     {
-        NCSARequestLog _log = new NCSARequestLog();
+        NCSARequestLog log = new NCSARequestLog();
 
-        File _logPath = new File(LOG_PATH);
-        _logPath.getParentFile().mkdirs();
+        File logPath = new File(LOG_PATH);
+        logPath.getParentFile().mkdirs();
 
-        _log.setFilename(_logPath.getPath());
-        _log.setRetainDays(90);
-        _log.setExtended(false);
-        _log.setAppend(true);
-        _log.setLogTimeZone("GMT");
-        _log.setLogLatency(true);
-        return _log;
+        log.setFilename(logPath.getPath());
+        log.setRetainDays(90);
+        log.setExtended(false);
+        log.setAppend(true);
+        log.setLogTimeZone("GMT");
+        log.setLogLatency(true);
+        return log;
     }
 
 }
