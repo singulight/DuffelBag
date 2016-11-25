@@ -18,11 +18,7 @@ public class AdminSocket {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
-        try {
-            session.getRemote().sendString("Server say: Connect!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @OnWebSocketMessage

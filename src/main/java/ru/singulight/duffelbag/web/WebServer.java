@@ -59,8 +59,6 @@ public class WebServer
         ctx.setContextPath("/");
         ctx.setResourceBase("webapp");
 
-
-
         List<Handler> handlers = new ArrayList<Handler>();
 
         handlers.add(ctx);
