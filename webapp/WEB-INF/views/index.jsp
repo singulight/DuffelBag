@@ -15,8 +15,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="resources/js/angular.min.js"></script>
-    <script src="resources/js/angular-route.min.js"></script>
+    <script src="resources/js/libs/angular.min.js"></script>
+    <script src="resources/js/libs/angular-route.min.js"></script>
     <script src="resources/js/app.js"></script>
     <link href="resources/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
@@ -41,8 +41,8 @@
     <div class="row">
         <div class="col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li class="active"><a href="#/">Главная панель</a></li>
-                <li><a href="#/node">Ноды</a></li>
+                <li class="active"><a href="#!/">Главная панель</a></li>
+                <li><a href="#!/node">Ноды</a></li>
                 <li><a href="">Локации</a></li>
                 <li><a href="">4444</a></li>
                 <li><a href="">5555</a></li>
