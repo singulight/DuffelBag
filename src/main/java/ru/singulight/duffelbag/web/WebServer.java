@@ -66,11 +66,11 @@ public class WebServer
         HandlerList contexts = new HandlerList();
         contexts.setHandlers(handlers.toArray(new Handler[0]));
 
-        RequestLogHandler log = new RequestLogHandler();
-        log.setRequestLog(createRequestLog());
+        RequestLogHandler wlog = new RequestLogHandler();
+        wlog.setRequestLog(createRequestLog());
 
         HandlerCollection result = new HandlerCollection();
-        result.setHandlers(new Handler[] {new SocketHandler(), contexts, log});
+        result.setHandlers(new Handler[] {new SocketHandler(), contexts, wlog});
 
         return result;
     }
