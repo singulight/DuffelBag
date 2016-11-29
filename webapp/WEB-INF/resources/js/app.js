@@ -9,20 +9,20 @@ app.config(function($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'resources/templates/home.html',
-            controller: 'Home'
+            controller: 'HomeCtrl'
         })
         .when('/node', {
             templateUrl: 'resources/templates/node.html',
-            controller: 'Node'
+            controller: 'NodeCtrl'
         })
         .otherwise({redirectTo: '/'});
 });
 
-app.controller('Home', ['$scope', function($scope) {
+app.controller('HomeCtrl', ['$scope', function($scope) {
     $scope.homepage = "Главная";
 }]);
 
-app.controller('Node', ['$scope', function($scope) {
+app.controller('NodeCtrl', ['$scope', function($scope) {
     $scope.homepage = "Ноды";
 }]);
 
