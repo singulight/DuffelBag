@@ -18,12 +18,20 @@ public class AdminSocket {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
-
+        try {
+            session.getRemote().sendString("{\"page\":1,\"type\":1}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnWebSocketMessage
     public void onMessage(String message) {
-
+        try {
+            session.getRemote().sendString("{\"page\":2,\"type\":1}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnWebSocketClose

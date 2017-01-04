@@ -5,7 +5,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import ru.singulight.duffelbag.nodes.AllNodes;
 
-/**ra6sk1We
+/**
  *
  * Created by Grigorii Nizovoi info@singulight.ru on 05.01.16.
  */

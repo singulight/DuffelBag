@@ -23,7 +23,7 @@
 
     <properties>
         <spring.version>4.3.2.RELEASE</spring.version>
-        <jetty.version>9.3.0.M1</jetty.version>
+        <jetty.version>9.2.19.v20160908</jetty.version>
         <jetty.jsp.version>9.2.19.v20160908</jetty.jsp.version>
     </properties>
     
