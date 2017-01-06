@@ -31,6 +31,7 @@ app.factory('WebSocketData',  ['$rootScope', function ($rootScope) {
         console.log("Socket succsessfully created");
     };
     ws.onmessage = function (msg, cbMsg) {
+
         listener(JSON.parse(msg.data));
     };
 
@@ -38,26 +39,37 @@ app.factory('WebSocketData',  ['$rootScope', function ($rootScope) {
         cbMsg = data;
         $rootScope.$broadcast('MsgReceived',data);
     }
-
-    Service.getMessage = function () {
-        return cbMsg;
-    };
-        
+    
     return Service;
 }]);
 
-app.controller('mainCtrl', ['$scope', '$location', function($scope, $location) {
+
+app.controller('mainCtrl', ['$scope', '$location', 'WebSocketData', function($scope, $location) {
     $scope.isActive = function(viewLocation) {
         return $location.path().indexOf(viewLocation) == 0;
-    }
+    };
+
+    $scope.$on('MsgReceived', function (event, data) {
+
+        switch (data.page) {
+            case 'root':
+                break;
+            case 'home':
+                $scope.$broadcast('MsgHome', data);
+                break;
+            case 'node':
+                $scope.$broadcast('MsgNoge' ,data);
+                break;
+        }
+    });
 
 }]);
 
-app.controller('HomeCtrl', ['$rootScope', '$scope', 'WebSocketData', function($rootScope, $scope, WebSocketData) {
+app.controller('HomeCtrl', ['$scope', function($scope) {
     $scope.homepage = "Главная";
-    $scope.$on('MsgReceived', function (event, data) {
+    $scope.$on('MsgHome', function (event, data) {
         console.log(data);
-        $scope.jsond = data;
+        $scope.jsond = data.data;
         $scope.$apply();
     })
 

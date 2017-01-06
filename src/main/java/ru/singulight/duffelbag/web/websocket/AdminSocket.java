@@ -13,13 +13,14 @@ import java.io.IOException;
  */
 @WebSocket
 public class AdminSocket {
-    private Session session;
+    public Session session;
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
+        SocketObjects.getInstance().join(this);
         try {
-            session.getRemote().sendString("{\"page\":1,\"type\":1}");
+            session.getRemote().sendString("{\"page\":\"home\",\"type\":1}");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,6 +37,7 @@ public class AdminSocket {
 
     @OnWebSocketClose
     public void onClose (int statusCode, String reason) {
-
+        SocketObjects.getInstance().leave(this);
+        this.session = null;
     }
 }
