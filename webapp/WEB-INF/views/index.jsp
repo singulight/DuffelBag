@@ -2,10 +2,8 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="ru.singulight.duffelbag.nodes.SensorNode" %>
  <%--
-  Created by IntelliJ IDEA.
-  User: grigorii
+  User: Grigorii Nizovoy info@singulight.ru
   Date: 02.09.16
-  Time: 12:44
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 

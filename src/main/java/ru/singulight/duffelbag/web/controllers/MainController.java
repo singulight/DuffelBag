@@ -28,6 +28,6 @@ public class MainController {
 
         model.addAttribute("message",nodes.allSize());
         model.addAttribute("sensors",nodes.allSensors);
-        return "index";
+        return "index2";
     }
 }

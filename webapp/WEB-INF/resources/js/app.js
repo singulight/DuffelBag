@@ -61,6 +61,7 @@ app.controller('mainCtrl', ['$scope', '$location', 'WebSocketData', function($sc
                 $scope.$broadcast('MsgNoge' ,data);
                 break;
         }
+
     });
 
 }]);
