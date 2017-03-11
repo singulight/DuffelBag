@@ -4,11 +4,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'ng-view',
-    template: `<h1>Hello {{count}}</h1>
-             <button (click)="increase($event)">Increase</button>`
+    selector: 'main-view',
+    templateUrl: 'resources/templates/main.html'
 })
-export class AppComponent  {
+export class MainComponent  {
     nm: string = "Gooooq";
     age: number = 24;
     count : number = 0;

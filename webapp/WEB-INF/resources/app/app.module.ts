@@ -3,12 +3,24 @@
     */
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent }  from './app.component';
 import { FormsModule } from '@angular/forms';
+import {Routes, RouterModule} from "@angular/router";
+
+import {MainComponent}  from './main.component';
+import {NodeListComponent} from "./nodelist.component";
+import {NodeComponent} from "./node.component";
+import {NotFoundComponent} from "./notfound.component";
+
+const appRoutes : Routes = [
+    {path:'', component: NodeListComponent},
+    {path:'nodelist', component: NodeListComponent},
+    {path:'node', component: NodeComponent},
+    {path:'**', component: NotFoundComponent}
+];
 
 @NgModule({
-    imports:      [ BrowserModule, FormsModule ],
-    declarations: [ AppComponent ],
-    bootstrap:    [ AppComponent ]
+    imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule ],
+    declarations: [ MainComponent, NodeListComponent, NodeComponent, NotFoundComponent ],
+    bootstrap:    [ MainComponent ]
 })
-export class AppModule { }
+export class AppModule {}
