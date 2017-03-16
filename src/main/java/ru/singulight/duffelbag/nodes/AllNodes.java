@@ -24,15 +24,15 @@ public class AllNodes {
     public static Map<String, ActuatorNode> allActuators = new Hashtable<>();
     public static Map<String, Thing> allThings = new Hashtable<>();
 
-    public boolean isSensorExist(String topic) {
+    public boolean isSensorExists(String topic) {
         return allSensors.containsKey(topic);
     }
 
-    public boolean isActuatorExist(String topic) {
+    public boolean isActuatorExists(String topic) {
         return  allActuators.containsKey(topic);
     }
 
-    public boolean isThingExist(String topic) {
+    public boolean isThingExists(String topic) {
         return allThings.containsKey(topic);
     }
 

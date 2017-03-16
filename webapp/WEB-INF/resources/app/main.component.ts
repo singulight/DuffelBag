@@ -11,7 +11,7 @@ export class MainComponent  {
     nm: string = "Gooooq";
     age: number = 24;
     count : number = 0;
-    increase(): void {
+    increase() {
         this.count++;
     }
     chg(nm:number) {

@@ -58,7 +58,7 @@ public class AddOrRefreshNode {
                 return;
             }
             if (sensorObj != null) {
-                if(!allNodes.isSensorExist(mqttTopic)) {
+                if(!allNodes.isSensorExists(mqttTopic)) {
                     try {
                         sensorObj.setId(idCounter.checkDbId(sensorObj.getId()));
                     } catch (Exception e) {
@@ -81,7 +81,7 @@ public class AddOrRefreshNode {
                 return;
             }
             if (actuatorObj != null) {
-                if(!allNodes.isActuatorExist(mqttTopic)) {
+                if(!allNodes.isActuatorExists(mqttTopic)) {
                     try {
                         actuatorObj.setId(idCounter.checkDbId(actuatorObj.getId()));
                     } catch (Exception e) {
@@ -99,7 +99,7 @@ public class AddOrRefreshNode {
                 return;
             }
             if (thingObj != null) {
-                if (!allNodes.isThingExist(mqttTopic)) {
+                if (!allNodes.isThingExists(mqttTopic)) {
                     try {
                         thingObj.setId(idCounter.checkDbId(thingObj.getId()));
                     } catch (Exception e) {
@@ -114,7 +114,7 @@ public class AddOrRefreshNode {
             /**
             * Parse sensor with non duffelbag format
             * */
-            if(!allNodes.isSensorExist(mqttTopic)) {
+            if(!allNodes.isSensorExists(mqttTopic)) {
                 log.info("Add non duffelbag unknown format node: "+mqttTopic);
                 SensorNode otherNode = new SensorNode(404, mqttTopic, NodeType.OTHER);
                 otherNode.setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
@@ -267,7 +267,7 @@ public class AddOrRefreshNode {
                     NodeType type = detectNodeType(splitTopic[1]);
                     ActuatorNode actuator = createActuator(type, splitTopic[2], actuatorTopic);
                     if (actuator == null) throw new ParseException(0);
-                    if (!allNodes.isActuatorExist(actuatorTopic)) {
+                    if (!allNodes.isActuatorExists(actuatorTopic)) {
                         allNodes.addActuator(actuator);
                         thing.addActuator(actuator);
                     }
@@ -295,7 +295,7 @@ public class AddOrRefreshNode {
                     NodeType type = detectNodeType(splitTopic[1]);
                     SensorNode sensor = createSensor(type, splitTopic[2], sensorTopic);
                     if (sensor == null) throw new ParseException(0);
-                    if (!allNodes.isSensorExist(sensorTopic)) {
+                    if (!allNodes.isSensorExists(sensorTopic)) {
                         allNodes.addSensor(sensor);
                         thing.addSensor(sensor);
                     }
