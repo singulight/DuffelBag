@@ -1,0 +1,37 @@
+/* С клиента на сервер */
+
+
+{
+    "token" : 28,
+    "ver" : 10,
+    "verb" : "read",        // create, read, update, delete
+    "comamnd" : "nodes",    // nodes, locations, actions
+    "param" : "01022232",   // hex, all
+    "data": []
+}
+
+/* С сервера к клиенту */
+
+{
+    "token" : 28,
+    "ver" : 10,
+    "verb" : "create",      // create, read, update, delete
+    "command" : "nodes",    // nodes, locations, actions, all
+    "data" : []
+}
+
+/* Node format */
+
+{
+    "ver" : 10,                                             // version
+    "id" : 23,                                              // internal ID
+    "topic" : "duffelbag/temperature/20000000000003e5",     // topic
+    "name" : "Температура на улице",                        // name
+    "type" : "TEMPERATURE",                                 // type
+    "value" : "10.2",                                       // value
+    "options" : {                                           // options
+        "minValue" : "0",
+        "maxValue" : "10.0",
+        "..." : ...
+    }
+}
