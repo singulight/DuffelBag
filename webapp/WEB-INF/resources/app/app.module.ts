@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import {Routes, RouterModule} from "@angular/router";
 
 import {MainComponent}  from './main.component';
-import {NodeListComponent} from "./nodelist.component";
+import {NodeListComponent} from "./node-list.component";
 import {NodeComponent} from "./node.component";
 import {NotFoundComponent} from "./notfound.component";
 

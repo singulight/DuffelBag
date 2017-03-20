@@ -5,6 +5,9 @@ import {Component} from "@angular/core";
 
 @Component ({
     selector: 'node-wiev',
-    templateUrl: 'resources/templates/node.html'
+    template: `
+            <div>
+                <h2>Node {{homepage}}</h2>
+            </div>`
 })
 export class NodeComponent {}
