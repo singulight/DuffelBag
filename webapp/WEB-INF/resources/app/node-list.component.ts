@@ -1,4 +1,5 @@
 import {Component} from "@angular/core";
+import {WebSocketService} from "./websocket.service";
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 03.03.17
  */
@@ -14,7 +15,7 @@ import {Component} from "@angular/core";
                         <div class="panel-heading">
                             <h3 class="panel-title">Заголовок</h3>
                         </div>
-                        <div class="panel-body">{{jsond}}</div>
+                        <div class="panel-body">Содержание</div>
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -58,7 +59,7 @@ import {Component} from "@angular/core";
                     <tbody>
                     <tr>
                         <td>00000000000000ef</td>
-                        <td>duffelbag/temperature/00000000000000ef</td>
+                        <td>{{jsond}}</td>
                         <td>Температура за окном</td>
                         <td>21</td>
                         <td>5867</td>
@@ -75,8 +76,14 @@ import {Component} from "@angular/core";
                     </tbody>
                 </table>
             </div>
-        </div>`
+        </div>`,
+    providers:[WebSocketService]
 })
 export class NodeListComponent {
-
+    constructor (public webService:WebSocketService) {};
+    public jsond: string;
+    ngOnInit() {
+        this.webService.start();
+        this.webService.message.subscribe((msg: any) => {this.jsond = msg.data});
+    }
 }

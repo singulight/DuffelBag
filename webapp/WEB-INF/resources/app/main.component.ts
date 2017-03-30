@@ -35,14 +35,4 @@ import { Component } from '@angular/core';
             </div>
         </div>`
 })
-export class MainComponent  {
-    nm: string = "Gooooq";
-    age: number = 24;
-    count : number = 0;
-    increase() {
-        this.count++;
-    }
-    chg(nm:number) {
-        if (nm == 1) this.count++ ; else this.count-- ;
-    }
-}
+export class MainComponent  {}

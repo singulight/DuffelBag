@@ -21,6 +21,7 @@ public class AdminSocket {
         SocketObjects.getInstance().join(this);
         try {
             session.getRemote().sendString("{\"page\":\"home\",\"type\":1}");
+
         } catch (IOException e) {
             e.printStackTrace();
         }

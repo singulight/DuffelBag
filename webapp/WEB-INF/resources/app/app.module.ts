@@ -10,6 +10,7 @@ import {MainComponent}  from './main.component';
 import {NodeListComponent} from "./node-list.component";
 import {NodeComponent} from "./node.component";
 import {NotFoundComponent} from "./notfound.component";
+import {WebSocketService} from "./websocket.service";
 
 const appRoutes : Routes = [
     {path:'', component: NodeListComponent},
@@ -21,6 +22,7 @@ const appRoutes : Routes = [
 @NgModule({
     imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule ],
     declarations: [ MainComponent, NodeListComponent, NodeComponent, NotFoundComponent ],
+    providers:    [ WebSocketService ],
     bootstrap:    [ MainComponent ]
 })
 export class AppModule {}
