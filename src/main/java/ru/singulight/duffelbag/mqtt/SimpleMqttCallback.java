@@ -25,7 +25,9 @@ public class SimpleMqttCallback implements MqttCallback {
         nodeFactory.detectDuffelbagNode();
         System.out.println(s+" "+mqttMessage.toString());
         System.out.println(sensors.allSize());
-        SocketObjects.getInstance().send("{\"page\":\"home\",\"verb\":\"create\",\"type\":\"row\",\"data\":\""+s+"\"}");
+        String jsonMsg = "{\"page\":\"home\",\"verb\":\"create\",\"type\":\"row\",\"topic\":\""+s+"\"}";
+        System.out.println(jsonMsg);
+        SocketObjects.getInstance().send(jsonMsg);
 /*        SensorNode ss = sensors.getSensor(s);
         byte [] messageByteArray = mqttMessage.getPayload();
         float floatValue = ByteBuffer.wrap(messageByteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();

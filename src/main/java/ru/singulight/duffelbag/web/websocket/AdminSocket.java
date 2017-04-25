@@ -19,12 +19,11 @@ public class AdminSocket {
     public void onConnect(Session session) {
         this.session = session;
         SocketObjects.getInstance().join(this);
-        try {
-            session.getRemote().sendString("{\"page\":\"home\",\"type\":1}");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            session.getRemote().sendString("{\"service\":\"welcome\"");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @OnWebSocketMessage

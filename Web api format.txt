@@ -5,7 +5,7 @@
     "token" : 28,
     "ver" : 10,
     "verb" : "read",        // create, read, update, delete
-    "comamnd" : "nodes",    // nodes, locations, actions
+    "entity" : "nodes",    // nodes, locations, actions
     "param" : "01022232",   // hex, all
     "data": []
 }
@@ -16,7 +16,7 @@
     "token" : 28,
     "ver" : 10,
     "verb" : "create",      // create, read, update, delete
-    "command" : "nodes",    // nodes, locations, actions, all
+    "entity" : "nodes",    // nodes, locations, actions, all
     "data" : []
 }
 

@@ -29,5 +29,6 @@ public enum NodeType {
 /* Actuator types */
     RGB,
     RELAY,
-    AC_VOLTAGE
+    AC_VOLTAGE;
+
 }

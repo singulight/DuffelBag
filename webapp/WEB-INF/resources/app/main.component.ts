@@ -2,6 +2,7 @@
     * Created by Grigorii Nizovoi info@singulight.ru on 24.02.17.
     */
 import { Component } from '@angular/core';
+import {WebSocketService} from "./websocket.service";
 
 @Component({
     selector: 'main-view',
@@ -33,6 +34,13 @@ import { Component } from '@angular/core';
                     </div>
                 </div>
             </div>
-        </div>`
+        </div>`,
+    providers: [WebSocketService]
 })
-export class MainComponent  {}
+export class MainComponent  {
+    constructor ( public ws: WebSocketService) {}
+
+    ngOnInit() {
+        
+    }
+}

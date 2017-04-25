@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 import {WebSocketService} from "./websocket.service";
+import {BaseNode} from "./POJOs";
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 03.03.17
  */
@@ -57,21 +58,13 @@ import {WebSocketService} from "./websocket.service";
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>00000000000000ef</td>
-                        <td>{{jsond}}</td>
-                        <td>Температура за окном</td>
-                        <td>21</td>
+                    <tr *ngFor="let node of nodes">
+                        <td>{{node.nodeId}}</td>
+                        <td>{{node.topic}}</td>
+                        <td>{{node.thisName}}</td>
+                        <td>{{node.thisValue}}</td>
                         <td>5867</td>
                         <td><a ref="#">21</a> <a ref="#">22</a> <a ref="#">добавить</a> <a ref="">создать</a></td>
-                    </tr>
-                    <tr>
-                        <td>00000000000000a6</td>
-                        <td>duffelbag/pressure/00000000000000a6</td>
-                        <td>Атмосферное давление</td>
-                        <td>762</td>
-                        <td>445</td>
-                        <td><a ref="#">23</a> <a ref="#">добавить</a> <a ref="">создать</a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -82,8 +75,25 @@ import {WebSocketService} from "./websocket.service";
 export class NodeListComponent {
     constructor (public webService:WebSocketService) {};
     public jsond: string;
+    public nodes: BaseNode[];
+
     ngOnInit() {
         this.webService.start();
-        this.webService.message.subscribe((msg: any) => {this.jsond = msg.data});
+        let getAllNodesJSON = {
+            token:  0,
+            ver:    10,
+            verb:   'read',
+            entity: 'nodes',
+            param:  'all'
+        };
+        this.webService.send(JSON.stringify(getAllNodesJSON));
+        this.webService.message.subscribe((msg: any) => {
+            if (msg['entity'] === 'nodes') {
+                if (msg['verb'] === 'create' && msg['param'] === 'all') {
+                    this.nodes = [];
+                    this.nodes = msg['data'];
+                }
+            }
+        });
     }
 }

@@ -1,5 +1,9 @@
 package ru.singulight.duffelbag.web.websocket;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import ru.singulight.duffelbag.nodes.BaseNode;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -34,5 +38,26 @@ public class SocketObjects {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void createRemoteNode(BaseNode node) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token",0);
+        jsonObject.put("ver",10);
+        jsonObject.put("verb","create");
+        jsonObject.put("entity","nodes");
+        this.send(jsonObject.toJSONString());
+    }
+    private JSONObject nodeToJSON(BaseNode node) {
+        JSONObject result = new JSONObject();
+        result.put("ver",10);
+        result.put("id",node.getId());
+        result.put("topic",node.getMqttTopic());
+        result.put("name",node.getName());
+        result.put("type",node.getNodeType().toString());
+        result.put("value",node.getValue());
+        JSONArray options = new JSONArray();
+        
+        return result;
     }
 }
