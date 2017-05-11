@@ -19,70 +19,33 @@ public class AllNodes {
         return ourInstance;
     }
 
+    private static Map<Long, BaseNode> allNodes = new Hashtable<>();
+    private static Map<String, Long> topicIdMap = new Hashtable<>();
 
-    public static Map<String, SensorNode> allSensors = new Hashtable<>();
-    public static Map<String, ActuatorNode> allActuators = new Hashtable<>();
-    public static Map<String, Thing> allThings = new Hashtable<>();
-
-    public boolean isSensorExists(String topic) {
-        return allSensors.containsKey(topic);
+    /*Getter and setters*/
+    public void insert(BaseNode node) {
+        allNodes.put(node.getId(), node);
+        topicIdMap.put(node.getMqttTopic(), node.getId());
     }
-
-    public boolean isActuatorExists(String topic) {
-        return  allActuators.containsKey(topic);
+    public  void delete(Long id) {
+        topicIdMap.remove(allNodes.get(id).getMqttTopic());
+        allNodes.remove(id);
     }
-
-    public boolean isThingExists(String topic) {
-        return allThings.containsKey(topic);
+    public boolean ifExists(Long id) {
+        return allNodes.containsKey(id);
     }
-
-    public void addSensor (SensorNode sensor) {
-        allSensors.put(sensor.getMqttTopic(), sensor);
+    public boolean ifTopicExists(String topic) {
+        return topicIdMap.containsKey(topic);
     }
-
-    public void addActuator(ActuatorNode actuator) {
-        allActuators.put(actuator.getMqttTopic(), actuator);
+    public BaseNode getNodeById(Long id) {
+        return allNodes.get(id);
     }
-
-    public void addThing(Thing thing) {
-        allThings.put(thing.getMqttTopic(), thing);
+    public BaseNode getNodeByTopic(String topic) {
+        Long id = topicIdMap.get(topic);
+        if (id == null) return null;
+        return allNodes.get(id);
     }
-
-    public SensorNode getSensor(String topic) {
-        return (SensorNode) allSensors.get(topic);
-    }
-
-    public ActuatorNode getActuator(String topic) {
-        return (ActuatorNode) allActuators.get(topic);
-    }
-
-    public  Thing getThing(String topic) {
-        return (Thing) allThings.get(topic);
-    }
-
-    /**
-     * @return count of registered sensors
-     **/
-    public int sensorsSize() {
-        return allSensors.size();
-    }
-    /**
-     * @return count of registered actuators
-     **/
-    public int actuatorsSize() {
-        return allActuators.size();
-    }
-    /**
-     * @return count of registered things
-     **/
-    public int thingsSize() {
-        return allThings.size();
-    }
-    /**
-     * @return count of all registered nodes
-     **/
     public int allSize() {
-        return sensorsSize()+actuatorsSize()+thingsSize();
+        return allNodes.size();
     }
-
 }

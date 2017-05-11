@@ -6,15 +6,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ru.singulight.duffelbag.nodes.*;
+import ru.singulight.duffelbag.nodes.types.NodePurpose;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Base64;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 
+import static com.sun.imageio.plugins.jpeg.JPEG.version;
+import static ru.singulight.duffelbag.nodes.types.NodePurpose.*;
 import static ru.singulight.duffelbag.nodes.types.NodeType.*;
 
 /**
@@ -24,11 +25,6 @@ public class AddOrRefreshNode {
 
     private String mqttTopic;
     private MqttMessage mqttMessage;
-    private String strValue;
-    private float floatValue;
-    private long id;
-    private NodeType nodeType = null;
-    private int error;
     private AllNodes allNodes = AllNodes.getInstance();
     private IdCounter idCounter = IdCounter.getInstance();
     private static final Logger log = Logger.getLogger(AddOrRefreshNode.class);
@@ -39,100 +35,100 @@ public class AddOrRefreshNode {
         this.mqttMessage = message;
     }
 
-    public void detectDuffelbagNode()  {
+    /**
+     *  @Return id of detected node, null if error
+     *  @Param updateValue true will update value, false will not
+     *  */
+    public Long detectDuffelbagNode(boolean updateValue)  {
 
+        BaseNode currentNode;
+        Long id = null;
+        
         String [] nodeParts = mqttTopic.split("/");
         if (nodeParts[0].equals("duffelbag") && nodeParts.length == 3) {
-            this.nodeType = detectNodeType(nodeParts[1]);
+            NodeType nodeType = detectNodeType(nodeParts[1]);
+            NodePurpose purpose = detectNodePurpose(nodeType);
+
             try {
-                this.id = new BigInteger(nodeParts[2] , 16).longValue(); // May throw NumberFormatException
+                id = new BigInteger(nodeParts[2] , 16).longValue(); // May throw NumberFormatException
             } catch (NumberFormatException nfe) {
-                log.error("BaseNode parse error: wrong ID. Topic: "+mqttTopic);
-                return;
+                log.error("Duffelbag topic format error: wrong ID. Topic: "+mqttTopic);
+                return null;
             }
-            SensorNode sensorObj = null;
-            try {
-                sensorObj = createSensor(nodeType, nodeParts[2], mqttTopic);
-            } catch (Exception e) {
-                log.error("BaseNode parse error in sensor case. Topic: "+mqttTopic);
-                return;
-            }
-            if (sensorObj != null) {
-                if(!allNodes.isSensorExists(mqttTopic)) {
-                    try {
-                        sensorObj.setId(idCounter.checkDbId(sensorObj.getId()));
-                    } catch (Exception e) {
-                        log.error("Id count is too big in create sensor case. Topic: "+mqttTopic);
-                        return;
+
+            currentNode = allNodes.getNodeById(id);
+            /* If node exists update value only */
+            if (currentNode != null) {
+                if (mqttTopic.equals(currentNode.getMqttTopic())) {
+                    if (updateValue) {
+                        currentNode.setRawValue(mqttMessage.getPayload());
+                        currentNode.setValue(mqttMessage.toString());
                     }
-                    allNodes.addSensor(sensorObj);
                 } else {
-                    SensorNode sn = allNodes.getSensor(mqttTopic);
-                    sn.setValue(floatValue);
-                    sn.setTextValue(strValue);
+                    log.error("Existed node id. Current topic: "+mqttTopic+", existed topic: "+currentNode.getMqttTopic());
+                    return null;
                 }
-                return;
-            }
-            ActuatorNode actuatorObj = null;
-            try {
-                actuatorObj = createActuator(nodeType, nodeParts[2], mqttTopic);
-            } catch (Exception e) {
-                log.error("BaseNode parse error in actuator case. Topic: "+mqttTopic);
-                return;
-            }
-            if (actuatorObj != null) {
-                if(!allNodes.isActuatorExists(mqttTopic)) {
+            /* If node not exists create a new one */
+            } else {
+                currentNode = new BaseNode();
+                try {
+                    currentNode.setId(idCounter.checkDbId(id));
+                } catch (Exception e) {
+                    log.error("Create new duffelbag node error: id not valid. Topic: "+mqttTopic);
+                    return null;
+                }
+                currentNode.setMqttTopic(mqttTopic);
+                currentNode.setNodeType(nodeType);
+                currentNode.setPurpose(purpose);
+                if (updateValue) {
+                    currentNode.setRawValue(mqttMessage.getPayload());
+                    currentNode.setValue(mqttMessage.toString());
+                }
+                if (purpose == THING) {
                     try {
-                        actuatorObj.setId(idCounter.checkDbId(actuatorObj.getId()));
+                        parseDuffelbagThingConfMessage(currentNode);
+                        if (updateValue) {
+                            currentNode.setRawValue(mqttMessage.getPayload());
+                            currentNode.setValue(mqttMessage.toString());
+                        }
                     } catch (Exception e) {
-                        log.error("Id count is too big in create actuator case. Topic: "+mqttTopic);
+                        log.error("Thing config message parse error. Topic: "+mqttTopic+", payload: "+mqttMessage.toString());
+                        return null;
                     }
-                    allNodes.addActuator(actuatorObj);
                 }
-                return;
-            }
-            Thing thingObj = null;
-            try {
-                thingObj = createThing(nodeType, nodeParts[2], mqttTopic);
-            } catch (Exception e) {
-                log.error("BaseNode parse error in thing case. Topic: "+mqttTopic);
-                return;
-            }
-            if (thingObj != null) {
-                if (!allNodes.isThingExists(mqttTopic)) {
-                    try {
-                        thingObj.setId(idCounter.checkDbId(thingObj.getId()));
-                    } catch (Exception e) {
-                        log.error("Id count is too big in create thing case. Topic: "+mqttTopic);
-                    }
-                    allNodes.addThing(thingObj);
-                }
-                return;
+                allNodes.insert(currentNode);
             }
 
         } else {
             /**
-            * Parse sensor with non duffelbag format
+            * Parse node with non duffelbag format
             * */
-            if(!allNodes.isSensorExists(mqttTopic)) {
-                log.info("Add non duffelbag unknown format node: "+mqttTopic);
-                SensorNode otherNode = new SensorNode(404, mqttTopic, NodeType.OTHER);
-                otherNode.setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
-                otherNode.setKnown(false);
-                otherNode.setVersion("0");
-                try {
-                    otherNode.setId(idCounter.getNewId());
-                    allNodes.addSensor(otherNode);
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                }
+            currentNode = allNodes.getNodeByTopic(mqttTopic);
+                /* If node exists update value only */
+            if (currentNode != null) {
+                if(updateValue) currentNode.setRawValue(mqttMessage.getPayload());
+                /* If node not exists create a new one */
             } else {
-                allNodes.getSensor(mqttTopic).setTextValue(Base64.getEncoder().encodeToString(mqttMessage.getPayload()));
+                currentNode = new BaseNode();
+                try {
+                    id = idCounter.getNewId();
+                    currentNode.setId(id);
+                } catch (Exception e) {
+                    log.error("Create new non duffelbag node error: id too big. Topic: "+mqttTopic);
+                    return null;
+                }
+                currentNode.setMqttTopic(mqttTopic);
+                if (updateValue) {
+                    currentNode.setRawValue(mqttMessage.getPayload());
+                    currentNode.setValue("unknown");
+                }
+                allNodes.insert(currentNode);
             }
         }
+        return id;
     }
 
-    public NodeType detectNodeType(String strType) {
+    private NodeType detectNodeType(String strType) {
         NodeType type;
         switch (strType) {
             case "temperature": type = TEMPERATURE; break;
@@ -163,11 +159,9 @@ public class AddOrRefreshNode {
         return type;
     }
 
-    private SensorNode createSensor(NodeType type, String nodeId, String topic) throws Exception {
-        long localId = new BigInteger(nodeId , 16).longValue(); // May throw NumberFormatException
-
-        SensorNode sensor = new SensorNode(localId, topic, type);
-        switch (type) {
+    private NodePurpose detectNodePurpose(NodeType nodeType) {
+        NodePurpose nodePurpose = UNKNOWN;
+        switch (nodeType) {
             case TEMPERATURE:
             case REL_HUMIDITY:
             case ATMOSPHERIC_PRESSURE:
@@ -183,132 +177,62 @@ public class AddOrRefreshNode {
             case GAS_CONCENTRATION:
             case PUSH_BUTTON:
             case SWT:
-                /**
-                 * Create sensor with float value
-                 * */
-                byte [] messageByteArray = mqttMessage.getPayload();
-                floatValue = ByteBuffer.wrap(messageByteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat(); //May throw BufferUnderflowException
-                 // May throw NumberFormatException
-                sensor.setValue(floatValue);
+                nodePurpose = SENSOR;
                 break;
-            case TEXT:
-                /**
-                 * Parse sensor with duffelbag format and text value
-                 * */
-                strValue = mqttMessage.toString();
-                sensor.setTextValue(strValue);
-                break;
-            default:
-                sensor = null;
-        }
-        return sensor;
-    }
-
-    private ActuatorNode createActuator(NodeType type, String nodeId, String topic) throws NumberFormatException {
-        long localId = new BigInteger(nodeId , 16).longValue(); // May throw NumberFormatException
-        ActuatorNode actuator = new ActuatorNode(localId, topic, type);
-        switch (type) {
             case RGB:
             case RELAY:
             case AC_VOLTAGE:
+                nodePurpose = ACTUATOR;
                 break;
-            default:
-                actuator = null;
-        }
-        return actuator;
-    }
-
-    private Thing createThing(NodeType type, String nodeId, String topic) throws NumberFormatException {
-        long localId = new BigInteger(nodeId , 16).longValue(); // May throw NumberFormatException
-        Thing thing = new Thing(localId, topic, type);
-        thing.setMqttTopic(topic);
-        switch (type) {
             case RGB_LAMP:
             case SWITCH:
             case OUTLET:
             case DIMMER:
-                thing.setConfigMessage(mqttMessage.toString());
-                try {
-                    parseDuffelbagThingConfMessage(thing);
-                } catch (Exception e) {
-                    log.error("Thing config message parse error. Topic: "+mqttTopic+" Message: "+mqttMessage.toString());
-                    thing = null;
-                }
+                nodePurpose = THING;
                 break;
             default:
-                thing = null;
+                nodePurpose = UNKNOWN;
         }
-        return thing;
+        return nodePurpose;
     }
 
-    private void parseDuffelbagThingConfMessage(Thing thing) throws Exception {
-        String message = thing.getConfigMessage();
+    private void parseDuffelbagThingConfMessage(BaseNode thing) throws Exception {
+        String message = thing.getValue();
         JSONParser jsonParser = new JSONParser();
         JSONObject mainObject = (JSONObject) jsonParser.parse(message);
+        List<Long> localIds = new LinkedList<Long>();
+        Map<Long, BaseNode> detectedNodes = new HashMap<>();
 
         String version = (String) mainObject.get("ver");
         thing.setVersion(version);
         if(version.equals("1.0")) {
             thing.setName((String) mainObject.get("name"));
-            thing.setLocation((String) mainObject.get("location"));
-            JSONArray thingActuators = (JSONArray) mainObject.get("actuators");
-            JSONArray thingSensors = (JSONArray) mainObject.get("sensors");
+            JSONArray thingNodes = (JSONArray) mainObject.get("nodes");
+            /* Parse nodes */
+            for (Object thingNode : thingNodes) {
+                JSONObject nodeObject = (JSONObject) thingNode;
+                String topic = (String) nodeObject.get("topic");
+                String name = (String) nodeObject.get("name");
+                Map<String, String> options = new HashMap<>();
+                JSONArray nodeOptions = (JSONArray) nodeObject.get("options");
+                for(Object option : nodeOptions)
+                    options.put((String)((JSONObject) option).get("key"), (String)((JSONObject) option).get("value"));
 
-            for (Object thingActuator : thingActuators) {
-                JSONObject actuatorObject = (JSONObject) thingActuator;
-                String actuatorTopic = (String) actuatorObject.get("topic");
-                String actuatorName = (String) actuatorObject.get("name");
-                String actuatorMinValueStr = (String) actuatorObject.get("minvalue");
-                String actuatorMaxValueStr = (String) actuatorObject.get("maxvalue");
-                float actuatorMinValue = Float.parseFloat(actuatorMinValueStr);
-                float actuatorMaxValue = Float.parseFloat(actuatorMaxValueStr);
-                String[] splitTopic = actuatorTopic.split("/");
-                if (splitTopic[0].equals("duffelbag") && splitTopic.length == 3) {
-                    NodeType type = detectNodeType(splitTopic[1]);
-                    ActuatorNode actuator = createActuator(type, splitTopic[2], actuatorTopic);
-                    if (actuator == null) throw new ParseException(0);
-                    if (!allNodes.isActuatorExists(actuatorTopic)) {
-                        allNodes.addActuator(actuator);
-                        thing.addActuator(actuator);
-                    }
-                    ActuatorNode actuatorFromMap = allNodes.getActuator(actuatorTopic);
-                    if (!actuatorFromMap.isKnown()) {
-                        actuatorFromMap.setName(actuatorName);
-                        actuatorFromMap.setMinValue(actuatorMinValue);
-                        actuatorFromMap.setMaxValue(actuatorMaxValue);
-                        actuatorFromMap.setKnown(true);
-                        actuatorFromMap.setVersion(version);
-                    }
-                } else throw new ParseException(0);
-            }
-            for (Object thingSensor : thingSensors) {
-                JSONObject sensorObject = (JSONObject) thingSensor;
-                String sensorTopic = (String) sensorObject.get("topic");
-                String sensorName = (String) sensorObject.get("name");
-                String sensorMinValueStr = (String) sensorObject.get("minvalue");
-                String sensorMaxValueStr = (String) sensorObject.get("maxvalue");
-                float sensorMinValue = Float.parseFloat(sensorMinValueStr);
-                float sensorMaxValue = Float.parseFloat(sensorMaxValueStr);
-
-                String[] splitTopic = sensorTopic.split("/");
-                if (splitTopic[0].equals("duffelbag") && splitTopic.length == 3) {
-                    NodeType type = detectNodeType(splitTopic[1]);
-                    SensorNode sensor = createSensor(type, splitTopic[2], sensorTopic);
-                    if (sensor == null) throw new ParseException(0);
-                    if (!allNodes.isSensorExists(sensorTopic)) {
-                        allNodes.addSensor(sensor);
-                        thing.addSensor(sensor);
-                    }
-                    SensorNode sensorFromMap = allNodes.getSensor(sensorTopic);
-                    if (!sensorFromMap.isKnown()) {
-                        sensorFromMap.setName(sensorName);
-                        sensorFromMap.setMinValue(sensorMinValue);
-                        sensorFromMap.setMaxValue(sensorMaxValue);
-                        sensorFromMap.setKnown(true);
-                        sensorFromMap.setVersion(version);
-
-                    }
-                } else throw new ParseException(0);
+                this.mqttTopic = topic;
+                this.mqttMessage = new MqttMessage();
+                Long localId = detectDuffelbagNode(false);
+                if (localId == null) {
+                    /* if error, do rollback*/
+                    localIds.forEach((id) -> allNodes.delete(id));
+                    throw new Exception();
+                }
+                localIds.add(localId);
+                /*fill node*/
+                BaseNode localNode = allNodes.getNodeById(localId);
+                localNode.setKnown(true);
+                localNode.setName(name);
+                localNode.setVersion("1.0");
+                localNode.setOptions(options);
             }
         }
     }

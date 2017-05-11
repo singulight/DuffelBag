@@ -4,7 +4,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.util.Observable;
 import org.apache.log4j.Logger;
-import ru.singulight.duffelbag.nodes.SensorNode;
+import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
 /**
@@ -20,7 +20,7 @@ public class LuaScriptAction implements Actionable {
 
     @Override
     public void update(Observable o, Object arg) {
-        SensorNode asd = new SensorNode(10,"duffelbag/voltage/", NodeType.VOLTAGE);
+        BaseNode asd = new BaseNode(10,"duffelbag/voltage/", NodeType.VOLTAGE);
         script = "asd:setValue(1);";
         try {
             lua.put("asd",asd);

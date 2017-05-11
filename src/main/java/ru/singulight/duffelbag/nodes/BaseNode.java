@@ -1,7 +1,11 @@
 package ru.singulight.duffelbag.nodes;
 
+import org.assertj.core.internal.Bytes;
+import ru.singulight.duffelbag.nodes.types.NodePurpose;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 /**
@@ -26,27 +30,39 @@ public class BaseNode {
     /** MQTT address for this node */
     protected String mqttTopic;
 
-    protected String name;
+    protected String name = "";
     /** Duffelbag node version*/
-    protected String version;
+    protected String version = "0";
     /** True if all the parameters are known */
     protected boolean known = false;
     /** Note type */
-    protected NodeType nodeType;
-    /** Sensor value if no NodeType.TEXT type. Must be synchronized to remote sensor.*/
-    private float value = 0.0f;
-    /** Minimum value of sensor */
-    private float minValue = 0.0f;
-    /** Maximum value of sensor */
-    private float maxValue = 100.0f;
-    /** Sensor value if NodeType.TEXT type. Must be synchronized to remote sensor.*/
-    private String textValue = "";
+    protected NodeType nodeType = NodeType.OTHER;
+    /* Node purpose */
+    protected NodePurpose purpose = NodePurpose.UNKNOWN;
+    /** Sensor value. Must be synchronized to remote sensor.*/
+    private String value = "";
+    /*  Raw value. Array of bytes */
+    protected byte[] rawValue;
+    /* Set of properties like min, max value and other options*/
+    protected Map<String, String> options = new HashMap<>();
     /** Observable object */
     protected Observable observable = new Observable();
+
+    /*
+    * Getters and setters
+    * */
+    public NodePurpose getPurpose() {
+        return purpose;
+    }
+    public void setPurpose(NodePurpose purpose) {
+        this.purpose = purpose;
+    }
 
     public NodeType getNodeType() {
         return nodeType;
     }
+    public void setNodeType(NodeType nodeType) {this.nodeType = nodeType; }
+
     public long getId() {
         return id;
     }
@@ -80,28 +96,34 @@ public class BaseNode {
         this.version = version;
     }
 
-    public float getValue() {
+    public String getValue() {
         return value;
     }
-    public void setValue(float value) {
+    public void setValue(String value) {
         this.value = value;
         observable.notifyObservers();
     }
-
-    public float getMinValue() {
-        return minValue;
+    public byte[] getRawValue() {
+        return rawValue;
     }
-    public void setMinValue (float minValue) { this.minValue = minValue; }
-
-    public float getMaxValue() {
-        return maxValue;
+    public void setRawValue(byte[] rawValue) {
+        this.rawValue = rawValue;
+        observable.notifyObservers();
     }
-    public void setMaxValue(float maxValue) { this.maxValue = maxValue; }
 
-    public String getTextValue() {
-        return textValue;
+    public Map getOptions() {
+        return options;
     }
-    public void setTextValue(String textValue) { this.textValue = textValue; }
+    public void setOptions(Map<String, String> options) {this.options = options;}
+    public void setOption(String key, String value) {
+        this.options.put(key, value);
+    }
+    public void deleteOption(String key) {
+        this.options.remove(key);
+    }
+    public boolean ifOptionExists(String key) {
+        return this.options.containsKey(key);
+    }
 
     public Observable getObservable() {
         return observable;

@@ -24,10 +24,7 @@ public class MainController {
 
     @RequestMapping("/")
     public String index(Model model) {
-        AllNodes nodes =  AllNodes.getInstance();
 
-        model.addAttribute("message",nodes.allSize());
-        model.addAttribute("sensors",nodes.allSensors);
         return "index2";
     }
 }

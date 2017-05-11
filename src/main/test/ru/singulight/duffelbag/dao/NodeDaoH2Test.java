@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.singulight.duffelbag.nodes.BaseNode;
-import ru.singulight.duffelbag.nodes.SensorNode;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
 /**
@@ -17,8 +16,8 @@ public class NodeDaoH2Test {
 
     @Test
     public void AddValueTest() {
-        SensorNode node = new SensorNode(1L,"duffelbag/temperature/0000000000000001", NodeType.TEMPERATURE);
-        node.setValue(54.25f);
+        BaseNode node = new BaseNode(1L,"duffelbag/temperature/0000000000000001", NodeType.TEMPERATURE);
+        node.setValue("52");
         cdb.saveValue((BaseNode) node);
     }
 

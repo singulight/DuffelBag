@@ -22,7 +22,7 @@ public class SimpleMqttCallback implements MqttCallback {
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         AddOrRefreshNode nodeFactory = new AddOrRefreshNode(s,mqttMessage);
-        nodeFactory.detectDuffelbagNode();
+        nodeFactory.detectDuffelbagNode(true);
         System.out.println(s+" "+mqttMessage.toString());
         System.out.println(sensors.allSize());
         String jsonMsg = "{\"page\":\"home\",\"verb\":\"create\",\"type\":\"row\",\"topic\":\""+s+"\"}";
