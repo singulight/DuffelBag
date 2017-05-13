@@ -1,6 +1,8 @@
 package ru.singulight.duffelbag.nodes;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,5 +49,9 @@ public class AllNodes {
     }
     public int allSize() {
         return allNodes.size();
+    }
+
+    public List<BaseNode> getAllNodesAsList(){
+        return new ArrayList<>(allNodes.values());
     }
 }

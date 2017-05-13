@@ -1,10 +1,12 @@
 package ru.singulight.duffelbag.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.singulight.duffelbag.nodes.*;
+import ru.singulight.duffelbag.web.websocket.SocketObjects;
 
 import static org.junit.Assert.*;
 import static ru.singulight.duffelbag.nodes.types.NodeType.*;
@@ -20,6 +22,7 @@ public class AddOrRefreshBaseNodeTest {
 
 
     AllNodes allNodes = AllNodes.getInstance();
+    SocketObjects socketObjects = SocketObjects.getInstance();
 
     @Before
     public void setUp() throws Exception {
@@ -141,5 +144,8 @@ public class AddOrRefreshBaseNodeTest {
         assertEquals(secondSensor.getValue(),"12");
         assertEquals(secondSensor.isKnown(),true);
         assertEquals(secondSensor.getVersion(),"1.0");
+
+        JSONObject jsonObject = socketObjects.nodeToJSON(allNodes.getNodeById((long) 0xf7));
+        System.out.println(jsonObject.toJSONString());
  }
 }
