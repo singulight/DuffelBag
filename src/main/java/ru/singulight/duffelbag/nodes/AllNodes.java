@@ -1,9 +1,9 @@
 package ru.singulight.duffelbag.nodes;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import ru.singulight.duffelbag.actions.Observer;
+import ru.singulight.duffelbag.web.websocket.SocketObjects;
+
+import java.util.*;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
@@ -16,18 +16,25 @@ public class AllNodes {
     }
 
     private static AllNodes ourInstance = new AllNodes();
-
     public static AllNodes getInstance() {
         return ourInstance;
     }
+    private static SocketObjects socketObjects = SocketObjects.getInstance();
 
     private static Map<Long, BaseNode> allNodes = new Hashtable<>();
+    /** Topic to Id map */
     private static Map<String, Long> topicIdMap = new Hashtable<>();
+    /** Create node observers */
+    private static List<Observer> observers = new LinkedList<>();
 
     /*Getter and setters*/
     public void insert(BaseNode node) {
         allNodes.put(node.getId(), node);
         topicIdMap.put(node.getMqttTopic(), node.getId());
+        notifyCreateNodeObservers(node);
+        ArrayList<BaseNode> nodes = new ArrayList<>(1);
+        nodes.add(node);
+        socketObjects.send(socketObjects.createRemoteNodes(nodes,0L).toJSONString());
     }
     public  void delete(Long id) {
         topicIdMap.remove(allNodes.get(id).getMqttTopic());
@@ -51,7 +58,16 @@ public class AllNodes {
         return allNodes.size();
     }
 
-    public List<BaseNode> getAllNodesAsList(){
+    public ArrayList<BaseNode> getAllNodesAsList() {
         return new ArrayList<>(allNodes.values());
+    }
+    public void registerCreateNodeObserver(Observer o) {
+        observers.add(o);
+    }
+    public void removeCreateNodeObserver(Observer o) {
+        observers.remove(o);
+    }
+    private void notifyCreateNodeObservers(BaseNode node) {
+        observers.forEach((Observer o) -> o.update(node));
     }
 }

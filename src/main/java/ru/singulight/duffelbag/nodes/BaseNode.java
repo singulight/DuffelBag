@@ -127,12 +127,12 @@ public class BaseNode implements Observable{
     }
 
     @Override
-    public void registerObserver(Observer o) {
+    public void registerUpdateObserver(Observer o) {
         observers.add(o);
     }
 
     @Override
-    public void removeObserver(Observer o) {
+    public void removeUpdateObserver(Observer o) {
         observers.remove(o);
     }
 

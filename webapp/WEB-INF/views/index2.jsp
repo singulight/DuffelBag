@@ -19,6 +19,7 @@
     <link href="resources/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="resources/css/main.css" rel="stylesheet">
+    <link href="resources/css/custom.css" rel="stylesheet">
     <script>
         System.import('app').catch(function(err){ console.error(err); });
     </script>

@@ -16,7 +16,7 @@ import {BaseNode} from "./POJOs";
                         <div class="panel-heading">
                             <h3 class="panel-title">Заголовок</h3>
                         </div>
-                        <div class="panel-body">Содержание</div>
+                        <div class="panel-body">{{tty}}</div>
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -53,18 +53,23 @@ import {BaseNode} from "./POJOs";
                         <th>Топик</th>
                         <th>Название</th>
                         <th>Значение</th>
-                        <th>Локация</th>
+                        <th>Тип</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr *ngFor="let node of nodes">
-                        <td>{{node.nodeId}}</td>
+                        <td>{{node.id}}</td>
                         <td>{{node.topic}}</td>
-                        <td>{{node.thisName}}</td>
-                        <td>{{node.thisValue}}</td>
-                        <td>5867</td>
-                        <td><a ref="#">21</a> <a ref="#">22</a> <a ref="#">добавить</a> <a ref="">создать</a></td>
+                        <td>{{node.name}}</td>
+                        <td>{{node.value}}</td>
+                        <td>{{node.type}}</td>
+                        <td>
+                            <ul>
+                                <li><a ref="#">добавить</a></li>
+                                <li><a ref="">создать</a></li>
+                            </ul>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -74,7 +79,6 @@ import {BaseNode} from "./POJOs";
 })
 export class NodeListComponent {
     constructor (public webService:WebSocketService) {};
-    public jsond: string;
     public nodes: BaseNode[];
 
     ngOnInit() {
@@ -84,14 +88,15 @@ export class NodeListComponent {
             ver:    10,
             verb:   'read',
             entity: 'nodes',
-            param:  'all'
+            param:  "0"
         };
+        this.nodes = [];
         this.webService.send(JSON.stringify(getAllNodesJSON));
         this.webService.message.subscribe((msg: any) => {
             if (msg['entity'] === 'nodes') {
-                if (msg['verb'] === 'create' && msg['param'] === 'all') {
-                    this.nodes = [];
-                    this.nodes = msg['data'];
+                if (msg['verb'] === 'create') {
+                    var addNodes : BaseNode[] = msg['data'];
+                    addNodes.forEach(s => { this.nodes.push(s); });
                 }
             }
         });

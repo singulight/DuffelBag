@@ -12,6 +12,6 @@ public class LuaScriptActionTest {
     @Test
     public void testUpdate() throws Exception {
         LuaScriptAction action = new LuaScriptAction();
-        action.update(new Observable(), "d");
+
     }
 }

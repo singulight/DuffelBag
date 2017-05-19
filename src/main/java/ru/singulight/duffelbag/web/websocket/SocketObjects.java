@@ -41,7 +41,8 @@ public class SocketObjects {
         }
     }
 
-    public void createRemoteNode(ArrayList<BaseNode> nodes, int token) {
+    public JSONObject createRemoteNodes(ArrayList<BaseNode> nodes, Long token) {
+        System.out.println(token);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token",token);
         jsonObject.put("ver",10);
@@ -51,35 +52,38 @@ public class SocketObjects {
         nodes.forEach((BaseNode node) -> {
             jsonNodes.add(nodeToJSON(node));
         });
-        this.send(jsonObject.toJSONString());
+        jsonObject.put("data",jsonNodes);
+        return jsonObject;
     }
 
     public JSONObject nodeToJSON(BaseNode node) {
         JSONObject result = new JSONObject();
-        result.put("ver",10);
-        result.put("id",node.getId());
-        result.put("topic",node.getMqttTopic());
-        result.put("name",node.getName());
-        result.put("known",node.isKnown());
-        result.put("type",node.getNodeType().toString());
-        result.put("purpose",node.getPurpose().toString());
-        result.put("value",node.getValue());
-        JSONArray options = new JSONArray();
-        Map<String, String> nodeOptions = node.getOptions();
-        nodeOptions.forEach((String key, String value) -> {
-            JSONObject option = new JSONObject();
-            option.put("key",key);
-            option.put("value",value);
-            options.add(option);
-        });
-        result.put("options",options);
-        JSONArray actions = new JSONArray();
-        node.getObserversIds().forEach((Integer id) -> {
-            JSONObject action = new JSONObject();
-            action.put("id",id);
-            actions.add(action);
-        });
-        result.put("actions",actions);
+        if (node != null) {
+            result.put("ver", 10);
+            result.put("id", node.getId());
+            result.put("topic", node.getMqttTopic());
+            result.put("name", node.getName());
+            result.put("known", node.isKnown());
+            result.put("type", node.getNodeType().toString());
+            result.put("purpose", node.getPurpose().toString());
+            result.put("value", node.getValue());
+            JSONArray options = new JSONArray();
+            Map<String, String> nodeOptions = node.getOptions();
+            nodeOptions.forEach((String key, String value) -> {
+                JSONObject option = new JSONObject();
+                option.put("key", key);
+                option.put("value", value);
+                options.add(option);
+            });
+            result.put("options", options);
+            JSONArray actions = new JSONArray();
+            node.getObserversIds().forEach((Integer id) -> {
+                JSONObject action = new JSONObject();
+                action.put("id", id);
+                actions.add(action);
+            });
+            result.put("actions", actions);
+        }
         return result;
     }
 }

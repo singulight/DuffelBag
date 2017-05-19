@@ -6,7 +6,7 @@
     "ver" : 10,
     "verb" : "read",        // create, read, update, delete
     "entity" : "nodes",    // nodes, locations, actions
-    "param" : "01022232",   // hex, all
+    "param" : "01022232",   // hex, 0 - all
     "data": []
 }
 

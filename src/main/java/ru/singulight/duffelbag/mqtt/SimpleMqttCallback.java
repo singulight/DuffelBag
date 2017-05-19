@@ -4,7 +4,6 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import ru.singulight.duffelbag.nodes.AllNodes;
-import ru.singulight.duffelbag.web.websocket.SocketObjects;
 
 /**
  *
@@ -25,13 +24,6 @@ public class SimpleMqttCallback implements MqttCallback {
         nodeFactory.detectDuffelbagNode(true);
         System.out.println(s+" "+mqttMessage.toString());
         System.out.println(sensors.allSize());
-        String jsonMsg = "{\"page\":\"home\",\"verb\":\"create\",\"type\":\"row\",\"topic\":\""+s+"\"}";
-        System.out.println(jsonMsg);
-        SocketObjects.getInstance().send(jsonMsg);
-/*        SensorNode ss = sensors.getSensor(s);
-        byte [] messageByteArray = mqttMessage.getPayload();
-        float floatValue = ByteBuffer.wrap(messageByteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-        if (ss.getNodeType().equals(NodeType.VOLTAGE)) System.out.println(s+" "+ss.getValue()+" "+floatValue); */
     }
 
     @Override

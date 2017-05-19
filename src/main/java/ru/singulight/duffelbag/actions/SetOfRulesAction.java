@@ -1,7 +1,8 @@
 package ru.singulight.duffelbag.actions;
 
-import java.util.Observable;
-import java.util.Observer;
+
+import ru.singulight.duffelbag.nodes.BaseNode;
+import ru.singulight.duffelbag.nodes.Observable;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
@@ -9,7 +10,12 @@ import java.util.Observer;
 public class SetOfRulesAction implements Observer {
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(BaseNode observable) {
 
+    }
+
+    @Override
+    public Integer getId() {
+        return null;
     }
 }
