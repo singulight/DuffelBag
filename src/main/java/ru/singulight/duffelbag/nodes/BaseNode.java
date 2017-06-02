@@ -1,7 +1,7 @@
 package ru.singulight.duffelbag.nodes;
 
-import org.assertj.core.internal.Bytes;
-import ru.singulight.duffelbag.actions.Observer;
+import ru.singulight.duffelbag.Interfaces.Observable;
+import ru.singulight.duffelbag.Interfaces.UpdateObserver;
 import ru.singulight.duffelbag.nodes.types.NodePurpose;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
  */
-public class BaseNode implements Observable{
+public class BaseNode implements Observable {
 
     public BaseNode(long sensorId, String mqttTopic, NodeType type) {
         this.id = sensorId;
@@ -47,7 +47,7 @@ public class BaseNode implements Observable{
     /* Set of properties like min, max value and other options*/
     protected Map<String, String> options = new HashMap<>();
     /** Observers */
-    protected List<Observer> observers = new LinkedList<>();
+    protected List<UpdateObserver> updateObservers = new LinkedList<>();
 
     /*
     * Getters and setters
@@ -102,7 +102,7 @@ public class BaseNode implements Observable{
     }
     public void setValue(String value) {
         this.value = value;
-        notifyObservers();
+        //notifyObservers();
     }
     public byte[] getRawValue() {
         return rawValue;
@@ -127,26 +127,26 @@ public class BaseNode implements Observable{
     }
 
     @Override
-    public void registerUpdateObserver(Observer o) {
-        observers.add(o);
+    public void registerUpdateObserver(UpdateObserver o) {
+        updateObservers.add(o);
     }
 
     @Override
-    public void removeUpdateObserver(Observer o) {
-        observers.remove(o);
+    public void removeUpdateObserver(UpdateObserver o) {
+        updateObservers.remove(o);
     }
 
     @Override
     public void notifyObservers() {
-        observers.forEach((Observer o) -> {
-            o.update(this);
+        updateObservers.forEach((UpdateObserver o) -> {
+            o.updateChanges(this);
         });
     }
 
     @Override
     public List<Integer> getObserversIds() {
         List<Integer> result = new LinkedList<>();
-        observers.forEach((Observer o) -> {
+        updateObservers.forEach((UpdateObserver o) -> {
             result.add(o.getId());
         });
         return result;

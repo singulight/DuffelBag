@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {WebSocketService} from "./websocket.service";
-import {BaseNode} from "./POJOs";
+import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 03.03.17
  */
@@ -8,7 +8,7 @@ import {BaseNode} from "./POJOs";
 @Component ({
     selector: 'nodelist-wiev',
     template: `
-        <div ng-controller="HomeCtrl">
+        <div>
             <h2 class="page-header">Информация сервера</h2>
             <div class="row">
                 <div class="col-sm-3">
@@ -54,6 +54,7 @@ import {BaseNode} from "./POJOs";
                         <th>Название</th>
                         <th>Значение</th>
                         <th>Тип</th>
+                        <th>Опции</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
@@ -66,8 +67,12 @@ import {BaseNode} from "./POJOs";
                         <td>{{node.type}}</td>
                         <td>
                             <ul>
-                                <li><a ref="#">добавить</a></li>
-                                <li><a ref="">создать</a></li>
+                                <li *ngFor="let option of node.options">{{option.key}}: {{option.value}}</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li *ngFor="let action of node.actions">Id: {{action.id}}</li>
                             </ul>
                         </td>
                     </tr>
@@ -96,7 +101,16 @@ export class NodeListComponent {
             if (msg['entity'] === 'nodes') {
                 if (msg['verb'] === 'create') {
                     var addNodes : BaseNode[] = msg['data'];
-                    addNodes.forEach(s => { this.nodes.push(s); });
+                    addNodes.forEach( s => {
+                        this.nodes.push(s);
+                    });
+                }
+                if (msg['verb'] === 'update') {
+                    this.nodes.forEach(s => {
+                        if (s['id'] === msg['param']) {
+                            s['value'] = msg['data'];
+                        }
+                    });
                 }
             }
         });

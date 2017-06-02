@@ -1,16 +1,16 @@
 package ru.singulight.duffelbag.actions;
 
 
+import ru.singulight.duffelbag.Interfaces.UpdateObserver;
 import ru.singulight.duffelbag.nodes.BaseNode;
-import ru.singulight.duffelbag.nodes.Observable;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class SetOfRulesAction implements Observer {
+public class SetOfRulesAction implements UpdateObserver {
 
     @Override
-    public void update(BaseNode observable) {
+    public void updateChanges(BaseNode observable) {
 
     }
 

@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class MqttDispatcher {
 
 
-    private String brokerURL = "tcp://192.168.1.68:1883";
+    private String brokerURL = "tcp://singulight.ru:1883";
     private String serverStringId = "DuffelBagServer";
     private MqttClient mqttClient;
 

@@ -2,6 +2,9 @@ package ru.singulight.duffelbag.web.websocket;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import ru.singulight.duffelbag.Interfaces.CreateObserver;
+import ru.singulight.duffelbag.Interfaces.UpdateObserver;
+import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 
 import java.io.IOException;
@@ -11,7 +14,7 @@ import java.util.Map;
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 06.01.17.
  */
-public class SocketObjects {
+public class SocketObjects implements CreateObserver, UpdateObserver {
     private static SocketObjects ourInstance = new SocketObjects();
 
     public static SocketObjects getInstance() {
@@ -19,6 +22,7 @@ public class SocketObjects {
     }
 
     private SocketObjects() {
+        AllNodes.getInstance().registerCreateNodeObserver(this);
     }
 
     private ArrayList<AdminSocket> sockets = new ArrayList<>();
@@ -42,7 +46,6 @@ public class SocketObjects {
     }
 
     public JSONObject createRemoteNodes(ArrayList<BaseNode> nodes, Long token) {
-        System.out.println(token);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token",token);
         jsonObject.put("ver",10);
@@ -56,11 +59,22 @@ public class SocketObjects {
         return jsonObject;
     }
 
+    public JSONObject updateValueRemoteNode(BaseNode node, Long token) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token",token);
+        jsonObject.put("ver",10);
+        jsonObject.put("verb","update");
+        jsonObject.put("entity","nodes");
+        jsonObject.put("param", longToJSON(node.getId()));
+        jsonObject.put("data",node.getValue());
+        return jsonObject;
+    }
+
     public JSONObject nodeToJSON(BaseNode node) {
         JSONObject result = new JSONObject();
         if (node != null) {
             result.put("ver", 10);
-            result.put("id", node.getId());
+            result.put("id", longToJSON(node.getId()));
             result.put("topic", node.getMqttTopic());
             result.put("name", node.getName());
             result.put("known", node.isKnown());
@@ -85,5 +99,27 @@ public class SocketObjects {
             result.put("actions", actions);
         }
         return result;
+    }
+
+    private Long longToJSON(Long num) {
+        return num & 0x00000000FFFFFFFFL; //TODO: do something for javascript (all numbers are double)
+    };
+
+    @Override
+    public void updateChanges(BaseNode observable) {
+        send(updateValueRemoteNode(observable, 0L).toJSONString());
+    }
+
+    @Override
+    public Integer getId() {
+        return null;
+    }
+
+    @Override
+    public void updateCreate(BaseNode observable) {
+        observable.registerUpdateObserver(this);
+        ArrayList<BaseNode> nodes = new ArrayList<>(1);
+        nodes.add(observable);
+        send(createRemoteNodes(nodes,0L).toJSONString());
     }
 }

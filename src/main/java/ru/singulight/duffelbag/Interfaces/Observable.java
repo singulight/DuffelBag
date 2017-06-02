@@ -1,6 +1,4 @@
-package ru.singulight.duffelbag.nodes;
-
-import ru.singulight.duffelbag.actions.Observer;
+package ru.singulight.duffelbag.Interfaces;
 
 import java.util.List;
 
@@ -8,8 +6,8 @@ import java.util.List;
  * Created by Grigorii Nizovoi info@singulight.ru on 13.05.17
  */
 public interface Observable {
-    void registerUpdateObserver(Observer o);
-    void removeUpdateObserver(Observer o);
+    void registerUpdateObserver(UpdateObserver o);
+    void removeUpdateObserver(UpdateObserver o);
     void notifyObservers();
     List<Integer> getObserversIds();
 }

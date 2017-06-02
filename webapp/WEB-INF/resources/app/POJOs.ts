@@ -9,3 +9,12 @@ export class BaseNode {
     public thisValue: string;
     public thisOptions: string [];
 }
+
+export class NodeOptions {
+    public optionName: string;
+    public optionValue: string;
+}
+
+export class NodeActions {
+    public actionId: number;
+}

@@ -17,7 +17,8 @@
     "ver" : 10,
     "verb" : "create",      // create, read, update, delete
     "entity" : "nodes",    // nodes, locations, actions, all
-    "data" : []
+    "data" : []            // for nodes
+    "id" : 345
 }
 
 /* Node format */

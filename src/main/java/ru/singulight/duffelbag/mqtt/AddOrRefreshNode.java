@@ -37,7 +37,7 @@ public class AddOrRefreshNode {
 
     /**
      *  @Return id of detected node, null if error
-     *  @Param updateValue true will update value, false will not
+     *  @Param updateValue true will updateChanges value, false will not
      *  */
     public Long detectDuffelbagNode(boolean updateValue)  {
 
@@ -57,12 +57,12 @@ public class AddOrRefreshNode {
             }
 
             currentNode = allNodes.getNodeById(id);
-            /* If node exists update value only */
+            /* If node exists updateChanges value only */
             if (currentNode != null) {
                 if (mqttTopic.equals(currentNode.getMqttTopic())) {
                     if (updateValue) {
-                        currentNode.setRawValue(mqttMessage.getPayload());
                         currentNode.setValue(mqttMessage.toString());
+                        currentNode.setRawValue(mqttMessage.getPayload());
                     }
                 } else {
                     log.error("Existed node id. Current topic: "+mqttTopic+", existed topic: "+currentNode.getMqttTopic());
@@ -81,15 +81,15 @@ public class AddOrRefreshNode {
                 currentNode.setNodeType(nodeType);
                 currentNode.setPurpose(purpose);
                 if (updateValue) {
-                    currentNode.setRawValue(mqttMessage.getPayload());
                     currentNode.setValue(mqttMessage.toString());
+                    currentNode.setRawValue(mqttMessage.getPayload());
                 }
                 if (purpose == THING) {
                     try {
                         parseDuffelbagThingConfMessage(currentNode);
                         if (updateValue) {
-                            currentNode.setRawValue(mqttMessage.getPayload());
                             currentNode.setValue(mqttMessage.toString());
+                            currentNode.setRawValue(mqttMessage.getPayload());
                         }
                     } catch (Exception e) {
                         log.error("Thing config message parse error. Topic: "+mqttTopic+", payload: "+mqttMessage.toString());
@@ -104,7 +104,7 @@ public class AddOrRefreshNode {
             * Parse node with non duffelbag format
             * */
             currentNode = allNodes.getNodeByTopic(mqttTopic);
-                /* If node exists update value only */
+                /* If node exists updateChanges value only */
             if (currentNode != null) {
                 if(updateValue) currentNode.setRawValue(mqttMessage.getPayload());
                 /* If node not exists create a new one */
@@ -119,8 +119,8 @@ public class AddOrRefreshNode {
                 }
                 currentNode.setMqttTopic(mqttTopic);
                 if (updateValue) {
-                    currentNode.setRawValue(mqttMessage.getPayload());
                     currentNode.setValue("unknown");
+                    currentNode.setRawValue(mqttMessage.getPayload());
                 }
                 allNodes.insert(currentNode);
             }

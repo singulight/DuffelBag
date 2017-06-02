@@ -1,6 +1,7 @@
 package ru.singulight.duffelbag.nodes;
 
-import ru.singulight.duffelbag.actions.Observer;
+import ru.singulight.duffelbag.Interfaces.CreateObserver;
+import ru.singulight.duffelbag.Interfaces.UpdateObserver;
 import ru.singulight.duffelbag.web.websocket.SocketObjects;
 
 import java.util.*;
@@ -19,22 +20,21 @@ public class AllNodes {
     public static AllNodes getInstance() {
         return ourInstance;
     }
-    private static SocketObjects socketObjects = SocketObjects.getInstance();
 
     private static Map<Long, BaseNode> allNodes = new Hashtable<>();
     /** Topic to Id map */
     private static Map<String, Long> topicIdMap = new Hashtable<>();
-    /** Create node observers */
-    private static List<Observer> observers = new LinkedList<>();
+    /** Create node createObservers */
+    private static List<CreateObserver> createObservers = new LinkedList<>();
 
     /*Getter and setters*/
     public void insert(BaseNode node) {
         allNodes.put(node.getId(), node);
         topicIdMap.put(node.getMqttTopic(), node.getId());
         notifyCreateNodeObservers(node);
-        ArrayList<BaseNode> nodes = new ArrayList<>(1);
-        nodes.add(node);
-        socketObjects.send(socketObjects.createRemoteNodes(nodes,0L).toJSONString());
+//        ArrayList<BaseNode> nodes = new ArrayList<>(1);
+//        nodes.add(node);
+//        socketObjects.send(socketObjects.createRemoteNodes(nodes,0L).toJSONString());
     }
     public  void delete(Long id) {
         topicIdMap.remove(allNodes.get(id).getMqttTopic());
@@ -61,13 +61,13 @@ public class AllNodes {
     public ArrayList<BaseNode> getAllNodesAsList() {
         return new ArrayList<>(allNodes.values());
     }
-    public void registerCreateNodeObserver(Observer o) {
-        observers.add(o);
+    public void registerCreateNodeObserver(CreateObserver o) {
+        createObservers.add(o);
     }
-    public void removeCreateNodeObserver(Observer o) {
-        observers.remove(o);
+    public void removeCreateNodeObserver(CreateObserver o) {
+        createObservers.remove(o);
     }
     private void notifyCreateNodeObservers(BaseNode node) {
-        observers.forEach((Observer o) -> o.update(node));
+        createObservers.forEach((CreateObserver o) -> o.updateCreate(node));
     }
 }
