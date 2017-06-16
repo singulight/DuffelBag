@@ -78,7 +78,7 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                     </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> 
         </div>`,
     providers:[WebSocketService]
 })

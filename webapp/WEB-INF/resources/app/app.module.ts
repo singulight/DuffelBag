@@ -11,6 +11,7 @@ import {NodeListComponent} from "./node-list.component";
 import {NodeComponent} from "./node.component";
 import {NotFoundComponent} from "./notfound.component";
 import {WebSocketService} from "./websocket.service";
+import {TokenCounterService} from "./token-counter.service";
 
 const appRoutes : Routes = [
     {path:'', component: NodeListComponent},
@@ -22,7 +23,7 @@ const appRoutes : Routes = [
 @NgModule({
     imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule ],
     declarations: [ MainComponent, NodeListComponent, NodeComponent, NotFoundComponent ],
-    providers:    [ WebSocketService ],
+    providers:    [ WebSocketService, TokenCounterService],
     bootstrap:    [ MainComponent ]
 })
 export class AppModule {}
