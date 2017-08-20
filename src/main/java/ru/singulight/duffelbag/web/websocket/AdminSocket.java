@@ -56,15 +56,35 @@ public class AdminSocket {
             if (mainObject.get("entity").equals("nodes")) {
                 /** Verb - read */
                 if (mainObject.get("verb").equals("read")) {
-                    Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
-                    if (id == 0) {
-                        System.out.println(id);
-                        response = socketObjects.createRemoteNodes(allNodes.getAllNodesAsList(), token).toJSONString();
-
-                    } else {
+                    if (mainObject.get("param").equals("byTopic")) {
                         ArrayList<BaseNode> param = new ArrayList<>(1);
-                        param.add(allNodes.getNodeById(id));
-                        response = socketObjects.createRemoteNodes(param , token).toJSONString();
+                        param.add(allNodes.getNodeByTopic((String) mainObject.get("data")));
+                        response = socketObjects.createRemoteNodes(param, token).toJSONString();
+                    } else {
+                        Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
+                        if (id == 0) {
+                            System.out.println(id);
+                            response = socketObjects.createRemoteNodes(allNodes.getAllNodesAsList(), token).toJSONString();
+
+                        } else {
+                            ArrayList<BaseNode> param = new ArrayList<>(1);
+                            param.add(allNodes.getNodeById(id));
+                            response = socketObjects.createRemoteNodes(param, token).toJSONString();
+                        }
+                    }
+                }
+                if (mainObject.get("verb").equals("update")) {
+                    /** Update node */
+                    Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
+                    BaseNode node = allNodes.getNodeById(id);
+                    if (node != null) {
+                        node.setMqttTopic((String) mainObject.get("topic"));
+                        node.setName((String) mainObject.get("name"));
+                        node.setKnown((Boolean) mainObject.get("known"));
+
+
+
+
                     }
                 }
             }
