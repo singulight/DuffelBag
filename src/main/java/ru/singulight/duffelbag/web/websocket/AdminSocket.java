@@ -81,30 +81,26 @@ public class AdminSocket {
                 }
                 /** Verb - update */
                 if (mainObject.get("verb").equals("update")) {
-                    BaseNode node;
-                    if (mainObject.get("param").equals("byTopic")) {
-                        node = allNodes.getNodeByTopic((String) mainObject.get("data"));
-                    } else {
-                        Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
-                        node = allNodes.getNodeById(id);
-                    }
-                        /** Update exists */
+                    // if (mainObject.get("param").equals("normal")) {}
+                    JSONObject nodeObject = (JSONObject) mainObject.get("data");
+                    BaseNode node = allNodes.getNodeByTopic((String) nodeObject.get("topic"));
+
+                    /** Update exists */
                     if (node != null) {
-                        node.setMqttTopic((String) mainObject.get("topic"));
-                        node.setName((String) mainObject.get("name"));
-                        node.setKnown((Boolean) mainObject.get("known"));
+                        node.setName((String) nodeObject.get("name"));
+                        node.setKnown((Boolean) nodeObject.get("known"));
                         try {
-                            node.setNodeType(NodeType.valueOf((String) mainObject.get("type")));
+                            node.setNodeType(NodeType.valueOf((String) nodeObject.get("type")));
                         } catch (Exception e) {
                             node.setNodeType(NodeType.OTHER);
                         }
                         try {
-                            node.setPurpose(NodePurpose.valueOf((String) mainObject.get("purpose")));
+                            node.setPurpose(NodePurpose.valueOf((String) nodeObject.get("purpose")));
                         } catch (Exception e) {
                             node.setPurpose(NodePurpose.UNKNOWN);
                         }
                         Map<String, String> options = new HashMap<>();
-                        JSONArray rawOptions = (JSONArray) mainObject.get(options);
+                        JSONArray rawOptions = (JSONArray) nodeObject.get("options");
                         Iterator i = rawOptions.iterator();
                         while (i.hasNext()) {
                             JSONObject slide = (JSONObject) i.next();
@@ -120,21 +116,21 @@ public class AdminSocket {
                         node = new BaseNode();
                         node.setVersion("1.0");
                         node.setId(0L);
-                        node.setMqttTopic((String) mainObject.get("topic"));
-                        node.setName((String) mainObject.get("name"));
-                        node.setKnown((Boolean) mainObject.get("known"));
+                        node.setMqttTopic((String) nodeObject.get("topic"));
+                        node.setName((String) nodeObject.get("name"));
+                        node.setKnown((Boolean) nodeObject.get("known"));
                         try {
-                            node.setNodeType(NodeType.valueOf((String) mainObject.get("type")));
+                            node.setNodeType(NodeType.valueOf((String) nodeObject.get("type")));
                         } catch (Exception e) {
                             node.setNodeType(NodeType.OTHER);
                         }
                         try {
-                            node.setPurpose(NodePurpose.valueOf((String) mainObject.get("purpose")));
+                            node.setPurpose(NodePurpose.valueOf((String) nodeObject.get("purpose")));
                         } catch (Exception e) {
                             node.setPurpose(NodePurpose.UNKNOWN);
                         }
                         Map<String, String> options = new HashMap<>();
-                        JSONArray rawOptions = (JSONArray) mainObject.get(options);
+                        JSONArray rawOptions = (JSONArray) nodeObject.get("options");
                         Iterator i = rawOptions.iterator();
                         while (i.hasNext()) {
                             JSONObject slide = (JSONObject) i.next();

@@ -7,7 +7,7 @@ export class BaseNode {
     public topic: string;
     public name: string;
     public known: boolean;
-    public type: number;
+    public type: string;
     public purpose: string;
     public value: string;
     public options: NodeOptions [];

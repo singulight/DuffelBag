@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {WebSocketService} from "./websocket.service";
 import {TokenCounterService} from "./token-counter.service";
 import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
+import any = jasmine.any;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 03.03.17
  */
@@ -16,9 +17,9 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                         <label>Идентификатор</label>
                         <table width="100%">
                             <tr>
-                                <td width="100%"><input class="form-control" name="ID" [(ngModel)]="ID"/></td>
+                                <td width="100%"><input class="form-control" name="ID" [(ngModel)]="currentNode.id"/></td>
                                 <td width="100%">
-                                    <button class="btn btn-default" (click)="searchById(ID)">
+                                    <button class="btn btn-default" (click)="searchById(currentNode.id)">
                                         <img src="resources/pic/search.png" alt="" style="vertical-align:middle"> Найти
                                     </button>
                                 </td>
@@ -30,9 +31,9 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                         <label>Сетевое имя (топик)</label>
                         <table width="100%">
                             <tr>
-                                <td width="100%"><input class="form-control" name="topic" [(ngModel)]="topic"/></td>
+                                <td width="100%"><input class="form-control" name="topic" [(ngModel)]="currentNode.topic"/></td>
                                 <td width="100%">
-                                    <button class="btn btn-default" (click)="searchByTopic(topic)">
+                                    <button class="btn btn-default" (click)="searchByTopic(currentNode.topic)">
                                         <img src="resources/pic/search.png" alt="" style="vertical-align:middle"> Найти
                                     </button>
                                 </td>
@@ -42,11 +43,11 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
 
                     <div class="form-group">
                         <label>Название</label>
-                        <input class="form-control" name="name" [(ngModel)]="name"/>
+                        <input class="form-control" name="name" [(ngModel)]="currentNode.name"/>
                     </div>
                     <div class="form-group">
                         <label>Тип</label>
-                        <select class="form-control" name="type" [(ngModel)]="type1">
+                        <select class="form-control" name="type" [(ngModel)]="currentNode.type">
                             <option value="TEMPERATURE">Датчик температуры</option>
                             <option value="REL_HUMIDITY">Датчик влажности</option>
                             <option value="ATMOSPHERIC_PRESSURE">Датчик атмосферного давления</option>
@@ -63,7 +64,7 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                     </div>
                     <div class="form-group">
                         <label>Тип</label>
-                        <select class="form-control" name="purpose" [(ngModel)]="purpose">
+                        <select class="form-control" name="purpose" [(ngModel)]="currentNode.purpose">
                             <option value="SENSOR">Датчик</option>
                             <option value="ACTUATOR">Исполнительное устройство</option>
                             <option value="THING">Агрегат</option>
@@ -72,7 +73,7 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="known" [(ngModel)]="known"/> Конфигурация сформирована
+                            <input type="checkbox" name="known" [(ngModel)]="currentNode.known"/> Конфигурация сформирована
                         </label>
                     </div>
                     <button class="btn btn-default" (click)="sendChanges()">
@@ -90,7 +91,7 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let option of nodeOpts let i=index ">
+                        <tr *ngFor="let option of currentNode.options let i=index ">
                             <td>{{option.key}}</td>
                             <td>{{option.value}}</td>
                             <td><img src="resources/pic/delete.png" (click)="deleteOption(i)" alt="Удалить"></td>
@@ -116,36 +117,15 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
 export class NodeComponent {
     constructor (public webService: WebSocketService, public tokenCounter: TokenCounterService) {}
 
-    public ID: string;
-    public topic: string;
-    public name: string;
-    public type1: string;
-    public purpose: string;
-    public known: boolean;
-    public nodeOpts: NodeOptions[] = new Array();
-    public nodeActs: NodeActions[] = new Array();
+    public currentNode: BaseNode = new BaseNode();
 
-    private getNodeJSON = {
+    private requestPreamble = {
         token: 0,
         ver: 10,
         verb: 'read',
         entity: 'nodes',
         param: 'none',
-        data: 'none'
-    }
-
-    private thisNode: BaseNode;
-
-    private nodeJSON = {
-        ver: "1.0",
-        id: 0,
-        topic: "",
-        name: "",
-        known: false,
-        type: 1,
-        purpose: "SENSOR",
-        value: "10",
-        options: [""]
+        data: {}
     }
 
     ngOnInit() {
@@ -157,38 +137,43 @@ export class NodeComponent {
                 message['ver'] === 10 &&
                 message['token'] === this.tokenCounter.getCurrent()) {
                 let data = message['data'];
-                this.ID = data[0].id;
-                this.topic = data[0].topic;
-                this.name = data[0].name;
-                this.type1 = data[0].type;
-                this.purpose = data[0].purpose;
-                this.known = data[0].known;
-                this.nodeOpts = [];
-                this.nodeOpts = data[0].options;
+                this.currentNode.id = data[0].id;
+                this.currentNode.topic = data[0].topic;
+                this.currentNode.name = data[0].name;
+                this.currentNode.type = data[0].type;
+                this.currentNode.purpose = data[0].purpose;
+                this.currentNode.known = data[0].known;
+                this.currentNode.options = [];
+                this.currentNode.options = data[0].options;
             }
         });
     }
 
     public searchById (id: string) {
-        this.getNodeJSON.param = id;
-        this.send(this.getNodeJSON);
+        this.requestPreamble.param = id;
+        this.send(this.requestPreamble);
     }
 
     public searchByTopic (topic: string) {
-        this.getNodeJSON.param = "byTopic";
-        this.getNodeJSON.data = topic;
-        this.send(this.getNodeJSON);
+        this.requestPreamble.verb = "read";
+        this.requestPreamble.param = "byTopic";
+        this.requestPreamble.data = topic;
+        this.send(this.requestPreamble);
     }
 
     public sendChanges() {
+        this.requestPreamble.verb = "update";
+        this.requestPreamble.param = "normal";
+        this.requestPreamble.data = this.currentNode;
+        this.send(this.requestPreamble);
         console.log("Send");
     }
 
     public addOption(opt: string, value: string) {
-        this.nodeOpts.push({key: opt, value: value});
+        this.currentNode.options.push({key: opt, value: value});
     }
     public deleteOption(i:number) {
-        this.nodeOpts.splice(i,1)
+        this.currentNode.options.splice(i,1)
     }
 
     private send(msg: any) {
