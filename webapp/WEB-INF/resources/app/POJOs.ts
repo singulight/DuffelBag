@@ -15,8 +15,8 @@ export class BaseNode {
 }
 
 export class NodeOptions {
-    public optionName: string;
-    public optionValue: string;
+    public key: string;
+    public value: string;
 }
 
 export class NodeActions {

@@ -6,13 +6,19 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
+import ru.singulight.duffelbag.nodes.types.NodePurpose;
+import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 10.11.16.
@@ -73,18 +79,71 @@ public class AdminSocket {
                         }
                     }
                 }
+                /** Verb - update */
                 if (mainObject.get("verb").equals("update")) {
-                    /** Update node */
-                    Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
-                    BaseNode node = allNodes.getNodeById(id);
+                    BaseNode node;
+                    if (mainObject.get("param").equals("byTopic")) {
+                        node = allNodes.getNodeByTopic((String) mainObject.get("data"));
+                    } else {
+                        Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
+                        node = allNodes.getNodeById(id);
+                    }
+                        /** Update exists */
                     if (node != null) {
                         node.setMqttTopic((String) mainObject.get("topic"));
                         node.setName((String) mainObject.get("name"));
                         node.setKnown((Boolean) mainObject.get("known"));
+                        try {
+                            node.setNodeType(NodeType.valueOf((String) mainObject.get("type")));
+                        } catch (Exception e) {
+                            node.setNodeType(NodeType.OTHER);
+                        }
+                        try {
+                            node.setPurpose(NodePurpose.valueOf((String) mainObject.get("purpose")));
+                        } catch (Exception e) {
+                            node.setPurpose(NodePurpose.UNKNOWN);
+                        }
+                        Map<String, String> options = new HashMap<>();
+                        JSONArray rawOptions = (JSONArray) mainObject.get(options);
+                        Iterator i = rawOptions.iterator();
+                        while (i.hasNext()) {
+                            JSONObject slide = (JSONObject) i.next();
+                            String key = (String) slide.get("key");
+                            String value = (String) slide.get("value");
+                            options.put(key, value);
+                        }
+                        node.deleteAllOptions();
+                        node.setOptions(options);
 
-
-
-
+                    } else {
+                        /** Create new */
+                        node = new BaseNode();
+                        node.setVersion("1.0");
+                        node.setId(0L);
+                        node.setMqttTopic((String) mainObject.get("topic"));
+                        node.setName((String) mainObject.get("name"));
+                        node.setKnown((Boolean) mainObject.get("known"));
+                        try {
+                            node.setNodeType(NodeType.valueOf((String) mainObject.get("type")));
+                        } catch (Exception e) {
+                            node.setNodeType(NodeType.OTHER);
+                        }
+                        try {
+                            node.setPurpose(NodePurpose.valueOf((String) mainObject.get("purpose")));
+                        } catch (Exception e) {
+                            node.setPurpose(NodePurpose.UNKNOWN);
+                        }
+                        Map<String, String> options = new HashMap<>();
+                        JSONArray rawOptions = (JSONArray) mainObject.get(options);
+                        Iterator i = rawOptions.iterator();
+                        while (i.hasNext()) {
+                            JSONObject slide = (JSONObject) i.next();
+                            String key = (String) slide.get("key");
+                            String value = (String) slide.get("value");
+                            options.put(key, value);
+                        }
+                        node.setOptions(options);
+                        //TODO: parse actions from JSON
                     }
                 }
             }

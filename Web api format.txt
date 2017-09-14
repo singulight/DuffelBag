@@ -29,7 +29,7 @@
     "topic" : "duffelbag/temperature/20000000000003e5",     // topic
     "name" : "Температура на улице",                        // name
     "known" : "true",                                       // all properties are filled
-    "type" : 1,                                             // type
+    "type" : "POWER",                                       // type
     "purpose" : "SENSOR",                                   // purpose
     "value" : "10.2",                                       // value
     "options" : [                                           // options

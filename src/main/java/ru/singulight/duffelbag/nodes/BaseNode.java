@@ -38,7 +38,7 @@ public class BaseNode implements Observable {
     protected boolean known = false;
     /** Note type */
     protected NodeType nodeType = NodeType.OTHER;
-    /* Node purpose */
+    /** Node purpose */
     protected NodePurpose purpose = NodePurpose.UNKNOWN;
     /** Sensor value. Must be synchronized to remote sensor.*/
     private String value = "";
@@ -49,7 +49,7 @@ public class BaseNode implements Observable {
     /** Observers */
     protected List<UpdateObserver> updateObservers = new LinkedList<>();
 
-    /*
+    /**
     * Getters and setters
     * */
     public NodePurpose getPurpose() {
@@ -116,6 +116,9 @@ public class BaseNode implements Observable {
         return options;
     }
     public void setOptions(Map<String, String> options) {this.options = options;}
+    public void deleteAllOptions() {
+        options.clear();
+    }
     public void setOption(String key, String value) {
         this.options.put(key, value);
     }
