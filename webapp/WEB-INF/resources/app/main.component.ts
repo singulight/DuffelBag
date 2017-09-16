@@ -24,8 +24,9 @@ import {WebSocketService} from "./websocket.service";
                     <div class="col-md-2 sidebar">
                         <ul class="nav nav-sidebar">
                             <li routerLinkActive="active"><a routerLink="nodelist">Информация</a></li>
-                            <li routerLinkActive="active"><a routerLink="node">Ноды</a></li>
-                            <li routerLinkActive="active"><a routerLink="actions">Действия</a></li>
+                            <li routerLinkActive="active"><a routerLink="node">Редактор ноды</a></li>
+                            <li routerLinkActive="active"><a routerLink="actionlist/">Действия</a></li>
+                            <li routerLinkActive="active"><a routerLink="action">Редактор действия</a></li>
                             <li routerLinkActive="active"><a routerLink="locations">Расположения</a></li>
                         </ul>
                     </div>

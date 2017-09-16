@@ -9,6 +9,7 @@ import {Routes, RouterModule} from "@angular/router";
 import {MainComponent}  from './main.component';
 import {NodeListComponent} from "./node-list.component";
 import {NodeComponent} from "./node.component";
+import {ActionListComponent} from "./action-list.component";
 import {NotFoundComponent} from "./notfound.component";
 import {WebSocketService} from "./websocket.service";
 import {TokenCounterService} from "./token-counter.service";
@@ -17,12 +18,13 @@ const appRoutes : Routes = [
     {path:'', component: NodeListComponent},
     {path:'nodelist', component: NodeListComponent},
     {path:'node', component: NodeComponent},
+    {path:'actionlist', component: ActionListComponent},
     {path:'**', component: NotFoundComponent}
 ];
 
 @NgModule({
     imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule ],
-    declarations: [ MainComponent, NodeListComponent, NodeComponent, NotFoundComponent ],
+    declarations: [ MainComponent, NodeListComponent, NodeComponent, ActionListComponent, NotFoundComponent ],
     providers:    [ WebSocketService, TokenCounterService],
     bootstrap:    [ MainComponent ]
 })
