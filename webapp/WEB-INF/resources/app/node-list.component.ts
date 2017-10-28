@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {WebSocketService} from "./websocket.service";
 import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
+import {TokenCounterService} from "./token-counter.service";
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 03.03.17
  */
@@ -61,7 +62,7 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
                     <tbody>
                     <tr *ngFor="let node of nodes">
                         <td>{{node.id}}</td>
-                        <td>{{node.topic}}</td>
+                        <td><a (mousedown)="onTopicClick(node.topic)" routerLink="/node" >{{node.topic}}</a></td>
                         <td>{{node.name}}</td>
                         <td>{{node.value}}</td>
                         <td>{{node.type}}</td>
@@ -83,7 +84,7 @@ import {BaseNode, NodeOptions, NodeActions} from "./POJOs";
     providers:[WebSocketService]
 })
 export class NodeListComponent {
-    constructor (public webService:WebSocketService) {};
+    constructor (private webService:WebSocketService, private tokenCounter: TokenCounterService) {};
     public nodes: BaseNode[];
 
     ngOnInit() {
@@ -114,5 +115,8 @@ export class NodeListComponent {
                 }
             }
         });
+    }
+    onTopicClick(topic: string){
+        this.tokenCounter.setTopic(topic);
     }
 }

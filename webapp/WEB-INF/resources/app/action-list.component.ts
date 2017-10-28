@@ -27,5 +27,8 @@ import {WebSocketService} from "./websocket.service";
     providers: [WebSocketService]
 })
 export class ActionListComponent {
-
+    constructor (public webService:WebSocketService) {};
+    ngOnInit() {
+        this.webService.start();
+    }
 }

@@ -112,10 +112,10 @@ import any = jasmine.any;
             </div>
         </div>
     `,
-    providers:[WebSocketService, TokenCounterService]
+    providers:[WebSocketService]
 })
 export class NodeComponent {
-    constructor (public webService: WebSocketService, public tokenCounter: TokenCounterService) {}
+    constructor (private webService: WebSocketService, private tokenCounter: TokenCounterService) {}
 
     public currentNode: BaseNode = new BaseNode();
 
@@ -147,6 +147,7 @@ export class NodeComponent {
                 this.currentNode.options = data[0].options;
             }
         });
+        this.searchByTopic(this.tokenCounter.getTopic());
     }
 
     public searchById (id: string) {

@@ -3,6 +3,7 @@
     */
 import { Component } from '@angular/core';
 import {WebSocketService} from "./websocket.service";
+import {TokenCounterService} from "./token-counter.service";
 
 @Component({
     selector: 'main-view',
@@ -39,7 +40,7 @@ import {WebSocketService} from "./websocket.service";
     providers: [WebSocketService]
 })
 export class MainComponent  {
-    constructor ( public ws: WebSocketService) {}
+    constructor (public ws: WebSocketService) {}
 
     ngOnInit() {
         
