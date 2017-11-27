@@ -4,19 +4,21 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.apache.log4j.Logger;
-import ru.singulight.duffelbag.Interfaces.UpdateObserver;
+import ru.singulight.duffelbag.Interfaces.Actions;
+import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class LuaScriptAction implements UpdateObserver {
+public class LuaScriptAction implements UpdateValueObserver, Actions{
 
     private static final Logger log = Logger.getLogger(LuaScriptAction.class);
     private ScriptEngine lua = new ScriptEngineManager().getEngineByName("luaj");
 
     private Integer id;
+    private String name;
     private String script;
 
     public String getScript() {
@@ -32,12 +34,8 @@ public class LuaScriptAction implements UpdateObserver {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     @Override
-    public void updateChanges(BaseNode observable) {
+    public void doAction() {
         BaseNode asd = new BaseNode(10,"duffelbag/voltage/", NodeType.VOLTAGE);
         script = "asd:setValue(1);";
         try {
@@ -48,5 +46,26 @@ public class LuaScriptAction implements UpdateObserver {
         } catch (Exception e) {
             log.error("Lua script error: ",e);
         }
+    }
+
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.LUASCRIPT;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public void updateNodeValueEvent(BaseNode observable) {
+        doAction();
     }
 }

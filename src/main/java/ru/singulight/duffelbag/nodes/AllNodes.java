@@ -1,8 +1,6 @@
 package ru.singulight.duffelbag.nodes;
 
-import ru.singulight.duffelbag.Interfaces.CreateObserver;
-import ru.singulight.duffelbag.Interfaces.UpdateObserver;
-import ru.singulight.duffelbag.web.websocket.SocketObjects;
+import ru.singulight.duffelbag.Interfaces.CreateNodeObserver;
 
 import java.util.*;
 
@@ -24,8 +22,8 @@ public class AllNodes {
     private static Map<Long, BaseNode> allNodes = new Hashtable<>();
     /** Topic to Id map */
     private static Map<String, Long> topicIdMap = new Hashtable<>();
-    /** Create node createObservers */
-    private static List<CreateObserver> createObservers = new LinkedList<>();
+    /** Create node createNodeObservers */
+    private static List<CreateNodeObserver> createNodeObservers = new LinkedList<>();
 
     /*Getter and setters*/
     public void insert(BaseNode node) {
@@ -36,6 +34,8 @@ public class AllNodes {
 //        nodes.add(node);
 //        socketObjects.send(socketObjects.createRemoteNodes(nodes,0L).toJSONString());
     }
+
+
     public  void delete(Long id) {
         topicIdMap.remove(allNodes.get(id).getMqttTopic());
         allNodes.remove(id);
@@ -61,13 +61,14 @@ public class AllNodes {
     public ArrayList<BaseNode> getAllNodesAsList() {
         return new ArrayList<>(allNodes.values());
     }
-    public void registerCreateNodeObserver(CreateObserver o) {
-        createObservers.add(o);
+
+    public void registerCreateNodeObserver(CreateNodeObserver o) {
+        createNodeObservers.add(o);
     }
-    public void removeCreateNodeObserver(CreateObserver o) {
-        createObservers.remove(o);
+    public void removeCreateNodeObserver(CreateNodeObserver o) {
+        createNodeObservers.remove(o);
     }
     private void notifyCreateNodeObservers(BaseNode node) {
-        createObservers.forEach((CreateObserver o) -> o.updateCreate(node));
+        createNodeObservers.forEach((CreateNodeObserver o) -> o.createNodeEvent(node));
     }
 }

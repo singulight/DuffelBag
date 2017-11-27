@@ -14,7 +14,7 @@ public class CreateDatabaseH2 implements CreateDatabase {
     }
 
     @Override
-    public void create() {
+    public void create10() {
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS node (" +
                         "id BIGINT PRIMARY KEY, " +
@@ -22,30 +22,41 @@ public class CreateDatabaseH2 implements CreateDatabase {
                         "topic VARCHAR(255) UNIQUE, " +
                         "version VARCHAR(16), " +
                         "known BOOLEAN, " +
-                        "nodetype INT," +
-                        "minValue REAL," +
-                        "maxValue REAL," +
-                        "idThing BIGINT," +
-                        "configMessage TEXT," +
-                        "location VARCHAR(255));"
+                        "nodetype VARCHAR(255)," +
+                        "nodepurpose VARCHAR(32)," +
+                        "configMessage TEXT);"
+        );
+        jdbcTemplate.execute(
+                "CREATE TABLE IF NOT EXISTS nodeOptions (" +
+                        "id IDENTITY," +
+                        "idNode BIGINT," +
+                        "opKey VARCHAR(255)," +
+                        "opValue TEXT)"
         );
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS nodeValues (" +
                         "id IDENTITY," +
                         "idNode BIGINT," +
                         "time TIMESTAMP," +
-                        "value REAL," +
-                        "textValue TEXT)"
+                        "nodeValue TEXT," +
+                        "rawValue BLOB)"
         );
         jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS luaSripts (" +
-                        "id IDENTITY," +
-                        "script TEXT) "
+                "CREATE TABLE IF NOT EXISTS luaSriptsActions (" +
+                        "id INTEGER PRIMARY KEY," +
+                        "description TEXT," +
+                        "textScript TEXT) "
+        );
+        jdbcTemplate.execute(
+                "CREATE TABLE IF NOT EXISTS javaClassActions (" +
+                        "id INTEGER PRIMARY KEY," +
+                        "description TEXT," +
+                        "className VARCHAR(255)) "
         );
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS observers (" +
-                         "idScript IDENTITY," +
-                         "idSensor BIGINT)"
+                         "idAction IDENTITY," +
+                         "idNode BIGINT)"
         );
     }
 }

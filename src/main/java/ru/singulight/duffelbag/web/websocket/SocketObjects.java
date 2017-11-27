@@ -2,8 +2,8 @@ package ru.singulight.duffelbag.web.websocket;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ru.singulight.duffelbag.Interfaces.CreateObserver;
-import ru.singulight.duffelbag.Interfaces.UpdateObserver;
+import ru.singulight.duffelbag.Interfaces.CreateNodeObserver;
+import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 06.01.17.
  */
-public class SocketObjects implements CreateObserver, UpdateObserver {
+public class SocketObjects implements CreateNodeObserver, UpdateValueObserver {
     private static SocketObjects ourInstance = new SocketObjects();
 
     public static SocketObjects getInstance() {
@@ -106,7 +106,7 @@ public class SocketObjects implements CreateObserver, UpdateObserver {
     };
 
     @Override
-    public void updateChanges(BaseNode observable) {
+    public void updateNodeValueEvent(BaseNode observable) {
         send(updateValueRemoteNode(observable, 0L).toJSONString());
     }
 
@@ -115,9 +115,9 @@ public class SocketObjects implements CreateObserver, UpdateObserver {
         return null;
     }
 
+
     @Override
-    public void updateCreate(BaseNode observable) {
-        observable.registerUpdateObserver(this);
+    public void createNodeEvent(BaseNode observable) {
         ArrayList<BaseNode> nodes = new ArrayList<>(1);
         nodes.add(observable);
         send(createRemoteNodes(nodes,0L).toJSONString());

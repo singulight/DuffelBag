@@ -10,6 +10,7 @@ import ru.singulight.duffelbag.nodes.BaseNode;
 public interface NodeDao {
     void mergeAllNodes();
     void saveAllNodes();
+    void loadAllNodes();
 
     void saveNode(BaseNode baseNode);
 

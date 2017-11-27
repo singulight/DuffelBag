@@ -37,7 +37,7 @@ public class AddOrRefreshNode {
 
     /**
      *  @Return id of detected node, null if error
-     *  @Param updateValue true will updateChanges value, false will not
+     *  @Param updateValue true will updateNodeValueEvent value, false will not
      *  */
     public Long detectDuffelbagNode(boolean updateValue)  {
 
@@ -57,7 +57,7 @@ public class AddOrRefreshNode {
             }
 
             currentNode = allNodes.getNodeById(id);
-            /* If node exists updateChanges value only */
+            /* If node exists updateNodeValueEvent value only */
             if (currentNode != null) {
                 if (mqttTopic.equals(currentNode.getMqttTopic())) {
                     if (updateValue) {
@@ -104,7 +104,7 @@ public class AddOrRefreshNode {
             * Parse node with non duffelbag format
             * */
             currentNode = allNodes.getNodeByTopic(mqttTopic);
-                /* If node exists updateChanges value only */
+                /* If node exists updateNodeValueEvent value only */
             if (currentNode != null) {
                 if(updateValue) currentNode.setRawValue(mqttMessage.getPayload());
                 /* If node not exists create a new one */

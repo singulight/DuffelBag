@@ -25,6 +25,6 @@ public class CreateDatabaseH2Test {
     @Test
     public void testCreate() throws Exception {
 
-        cdb.create();
+        cdb.create10();
     }
 }
