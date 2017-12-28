@@ -1,7 +1,7 @@
 package ru.singulight.duffelbag.actions;
 
 
-import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
+import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.BaseNode;
 
 /**

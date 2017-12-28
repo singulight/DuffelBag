@@ -1,4 +1,4 @@
-package ru.singulight.duffelbag.Interfaces;
+package ru.singulight.duffelbag.actions;
 
 import ru.singulight.duffelbag.actions.ActionType;
 

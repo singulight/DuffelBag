@@ -3,21 +3,10 @@ package ru.singulight.duffelbag.main;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import ru.singulight.duffelbag.Interfaces.CreateNodeObserver;
 import ru.singulight.duffelbag.dao.CreateDatabase;
-import ru.singulight.duffelbag.dao.CreateDatabaseH2;
 import ru.singulight.duffelbag.dao.NodeDao;
-import ru.singulight.duffelbag.dao.NodeDaoH2;
 import ru.singulight.duffelbag.mqtt.MqttDispatcher;
-import ru.singulight.duffelbag.nodes.AllNodes;
-import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.web.WebServer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 05.01.16.

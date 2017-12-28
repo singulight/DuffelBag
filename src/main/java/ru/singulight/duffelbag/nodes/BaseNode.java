@@ -1,7 +1,7 @@
 package ru.singulight.duffelbag.nodes;
 
-import ru.singulight.duffelbag.Interfaces.Observable;
-import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
+import ru.singulight.duffelbag.messagebus.Observable;
+import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.types.NodePurpose;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 import ru.singulight.duffelbag.web.websocket.SocketObjects;
@@ -21,11 +21,11 @@ public class BaseNode implements Observable {
         this.id = sensorId;
         this.mqttTopic = mqttTopic;
         this.nodeType = type;
-        registerUpdateObserver(SocketObjects.getInstance());
+        //registerUpdateObserver(SocketObjects.getInstance());
     }
 
     public BaseNode() {
-        registerUpdateObserver(SocketObjects.getInstance());
+        //registerUpdateObserver(SocketObjects.getInstance());
     }
 
     /** Sensor id*/
@@ -46,7 +46,8 @@ public class BaseNode implements Observable {
     protected String value = "";
     /*  Raw value. Array of bytes */
     protected byte[] rawValue;
-    /**  */
+    /** Strategy save values to database */
+    protected Strategy notifyUpdateStategy = Strategy.EACH;
     /* Set of properties like min, max value and other options*/
     protected Map<String, String> options = new HashMap<>();
     /** Observers */
@@ -114,6 +115,12 @@ public class BaseNode implements Observable {
         this.rawValue = rawValue;
         notifyObservers();
     }
+    public Strategy getNotifyUpdateStategy() {
+        return notifyUpdateStategy;
+    }
+    public void setNotifyUpdateStategy(Strategy notifyUpdateStategy) {
+        this.notifyUpdateStategy = notifyUpdateStategy;
+    }
 
     public Map getOptions() {
         return options;
@@ -146,7 +153,6 @@ public class BaseNode implements Observable {
     public void notifyObservers() {
         updateValueObservers.forEach((UpdateValueObserver o) -> {
             o.updateNodeValueEvent(this);
-            System.out.println("Update value observer: "+o.toString());
         });
     }
 
@@ -159,4 +165,12 @@ public class BaseNode implements Observable {
         return result;
     }
 
+    public enum Strategy {
+        EACH,
+        PERIODICALLY_LAST,
+        PERIODICALLY_AVERAGE,
+        PERIODICALLY_MIN,
+        PERIODICALLY_MAX,
+        PERIODICALLY_MIN_MAX
+    }
 }

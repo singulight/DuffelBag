@@ -1,12 +1,10 @@
 package ru.singulight.duffelbag.dao;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import ru.singulight.duffelbag.Interfaces.CreateNodeObserver;
-import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
+import ru.singulight.duffelbag.messagebus.CreateNodeObserver;
+import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
 import ru.singulight.duffelbag.actions.LuaScriptAction;
-import ru.singulight.duffelbag.main.Main;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.types.NodePurpose;
@@ -14,7 +12,6 @@ import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 /**

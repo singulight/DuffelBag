@@ -2,8 +2,8 @@ package ru.singulight.duffelbag.web.websocket;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ru.singulight.duffelbag.Interfaces.CreateNodeObserver;
-import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
+import ru.singulight.duffelbag.messagebus.CreateNodeObserver;
+import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 

@@ -1,6 +1,6 @@
 package ru.singulight.duffelbag.nodes;
 
-import ru.singulight.duffelbag.Interfaces.CreateNodeObserver;
+import ru.singulight.duffelbag.messagebus.CreateNodeObserver;
 
 import java.util.*;
 

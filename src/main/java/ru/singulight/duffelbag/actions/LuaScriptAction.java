@@ -4,8 +4,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.apache.log4j.Logger;
-import ru.singulight.duffelbag.Interfaces.Actions;
-import ru.singulight.duffelbag.Interfaces.UpdateValueObserver;
+import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 

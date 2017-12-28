@@ -1,4 +1,4 @@
-package ru.singulight.duffelbag.Interfaces;
+package ru.singulight.duffelbag.messagebus;
 
 import java.util.List;
 
