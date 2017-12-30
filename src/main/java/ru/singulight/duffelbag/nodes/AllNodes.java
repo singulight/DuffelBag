@@ -1,6 +1,7 @@
 package ru.singulight.duffelbag.nodes;
 
 import ru.singulight.duffelbag.messagebus.CreateNodeObserver;
+import ru.singulight.duffelbag.messagebus.MessageBus;
 
 import java.util.*;
 
@@ -19,26 +20,27 @@ public class AllNodes {
         return ourInstance;
     }
 
+    private MessageBus messageBus = MessageBus.getInstance();
+
     private static Map<Long, BaseNode> allNodes = new Hashtable<>();
     /** Topic to Id map */
     private static Map<String, Long> topicIdMap = new Hashtable<>();
-    /** Create node createNodeObservers */
-    private static List<CreateNodeObserver> createNodeObservers = new LinkedList<>();
 
     /*Getter and setters*/
     public void insert(BaseNode node) {
         allNodes.put(node.getId(), node);
         topicIdMap.put(node.getMqttTopic(), node.getId());
-        notifyCreateNodeObservers(node);
-//        ArrayList<BaseNode> nodes = new ArrayList<>(1);
-//        nodes.add(node);
-//        socketObjects.send(socketObjects.createRemoteNodes(nodes,0L).toJSONString());
+        messageBus.onCreateEvent(node);
     }
 
-
-    public  void delete(Long id) {
+    public  void delete(BaseNode node) {
+        messageBus.onDeleteEvent(node);
+        Long id = node.getId();
         topicIdMap.remove(allNodes.get(id).getMqttTopic());
         allNodes.remove(id);
+    }
+    public void delete (Long id) {
+        delete(allNodes.get(id));
     }
     public boolean ifExists(Long id) {
         return allNodes.containsKey(id);
@@ -60,15 +62,5 @@ public class AllNodes {
 
     public ArrayList<BaseNode> getAllNodesAsList() {
         return new ArrayList<>(allNodes.values());
-    }
-
-    public void registerCreateNodeObserver(CreateNodeObserver o) {
-        createNodeObservers.add(o);
-    }
-    public void removeCreateNodeObserver(CreateNodeObserver o) {
-        createNodeObservers.remove(o);
-    }
-    private void notifyCreateNodeObservers(BaseNode node) {
-        createNodeObservers.forEach((CreateNodeObserver o) -> o.createNodeEvent(node));
     }
 }

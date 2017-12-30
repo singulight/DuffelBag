@@ -1,10 +1,10 @@
 package ru.singulight.duffelbag.nodes;
 
+import ru.singulight.duffelbag.messagebus.MessageBus;
 import ru.singulight.duffelbag.messagebus.Observable;
 import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
 import ru.singulight.duffelbag.nodes.types.NodePurpose;
 import ru.singulight.duffelbag.nodes.types.NodeType;
-import ru.singulight.duffelbag.web.websocket.SocketObjects;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,21 +15,21 @@ import java.util.Map;
  * Created by Grigorii Nizovoi info@singulight.ru on 10.01.16.
  * Superclass for each sensor, actuator and thing
  */
-public class BaseNode implements Observable {
+public class BaseNode  {
 
     public BaseNode(long sensorId, String mqttTopic, NodeType type) {
         this.id = sensorId;
         this.mqttTopic = mqttTopic;
         this.nodeType = type;
-        //registerUpdateObserver(SocketObjects.getInstance());
     }
 
     public BaseNode() {
-        //registerUpdateObserver(SocketObjects.getInstance());
     }
 
+    protected MessageBus messageBus = MessageBus.getInstance();
+
     /** Sensor id*/
-    protected Long id;
+    protected Long id = 0L;
     /** MQTT address for this node */
     protected String mqttTopic;
 
@@ -45,14 +45,11 @@ public class BaseNode implements Observable {
     /** Sensor value. Must be synchronized to remote sensor.*/
     protected String value = "";
     /*  Raw value. Array of bytes */
-    protected byte[] rawValue;
+    protected byte[] rawValue = {0};
     /** Strategy save values to database */
     protected Strategy notifyUpdateStategy = Strategy.EACH;
     /* Set of properties like min, max value and other options*/
     protected Map<String, String> options = new HashMap<>();
-    /** Observers */
-    protected List<UpdateValueObserver> updateValueObservers = new LinkedList<>();
-
     /**
     * Getters and setters
     * */
@@ -72,7 +69,7 @@ public class BaseNode implements Observable {
         return id;
     }
     public void setId(Long id) {
-        this.id = id;
+        if (id != null) this.id = id;
     }
 
     public String getName() {
@@ -106,14 +103,13 @@ public class BaseNode implements Observable {
     }
     public void setValue(String value) {
         this.value = value;
-        //notifyObservers();
     }
     public byte[] getRawValue() {
         return rawValue;
     }
     public void setRawValue(byte[] rawValue) {
         this.rawValue = rawValue;
-        notifyObservers();
+        messageBus.onUpdateEvent(this);
     }
     public Strategy getNotifyUpdateStategy() {
         return notifyUpdateStategy;
@@ -137,32 +133,6 @@ public class BaseNode implements Observable {
     }
     public boolean ifOptionExists(String key) {
         return this.options.containsKey(key);
-    }
-
-    @Override
-    public void registerUpdateObserver(UpdateValueObserver o) {
-        updateValueObservers.add(o);
-    }
-
-    @Override
-    public void removeUpdateObserver(UpdateValueObserver o) {
-        updateValueObservers.remove(o);
-    }
-
-    @Override
-    public void notifyObservers() {
-        updateValueObservers.forEach((UpdateValueObserver o) -> {
-            o.updateNodeValueEvent(this);
-        });
-    }
-
-    @Override
-    public List<Integer> getObserversIds() {
-        List<Integer> result = new LinkedList<>();
-        updateValueObservers.forEach((UpdateValueObserver o) -> {
-            result.add(o.getId());
-        });
-        return result;
     }
 
     public enum Strategy {

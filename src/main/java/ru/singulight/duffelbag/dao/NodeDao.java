@@ -13,6 +13,7 @@ public interface NodeDao {
     void loadAllNodes();
 
     void saveNode(BaseNode baseNode);
+    void updateConfiguration(BaseNode baseNode);
 
     void saveValue(BaseNode node);
 

@@ -20,8 +20,8 @@ public class Main {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         CreateDatabase createDatabase = (CreateDatabase) ctx.getBean("createDatabase");
-        NodeDao nodeDao = (NodeDao) ctx.getBean("nodeDaoH2");
         MqttDispatcher mqttDispatcher = new MqttDispatcher();
+        NodeDao nodeDao = (NodeDao) ctx.getBean("nodeDaoH2");
         WebServer webServer = new WebServer();
 
         createDatabase.create10();

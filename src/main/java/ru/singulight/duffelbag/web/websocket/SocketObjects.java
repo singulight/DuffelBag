@@ -2,19 +2,20 @@ package ru.singulight.duffelbag.web.websocket;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ru.singulight.duffelbag.messagebus.CreateNodeObserver;
-import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
-import ru.singulight.duffelbag.nodes.AllNodes;
+import ru.singulight.duffelbag.messagebus.MessageBus;
+import ru.singulight.duffelbag.messagebus.NodeEventObserver;
 import ru.singulight.duffelbag.nodes.BaseNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static ru.singulight.duffelbag.messagebus.MessageBus.*;
+
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 06.01.17.
  */
-public class SocketObjects implements CreateNodeObserver, UpdateValueObserver {
+public class SocketObjects implements NodeEventObserver {
     private static SocketObjects ourInstance = new SocketObjects();
 
     public static SocketObjects getInstance() {
@@ -22,8 +23,11 @@ public class SocketObjects implements CreateNodeObserver, UpdateValueObserver {
     }
 
     private SocketObjects() {
-        AllNodes.getInstance().registerCreateNodeObserver(this);
+        messageBus.registerObserver(ALL_OBSERVABLES, this);
+
     }
+
+    private MessageBus messageBus = MessageBus.getInstance();
 
     private ArrayList<AdminSocket> sockets = new ArrayList<>();
 
@@ -45,7 +49,7 @@ public class SocketObjects implements CreateNodeObserver, UpdateValueObserver {
         }
     }
 
-    public JSONObject createRemoteNodes(ArrayList<BaseNode> nodes, Long token) {
+    JSONObject createRemoteNodes(ArrayList<BaseNode> nodes, Long token) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token",token);
         jsonObject.put("ver",10);
@@ -91,11 +95,12 @@ public class SocketObjects implements CreateNodeObserver, UpdateValueObserver {
             });
             result.put("options", options);
             JSONArray actions = new JSONArray();
-            node.getObserversIds().forEach((Integer id) -> {
-                JSONObject action = new JSONObject();
-                action.put("id", id);
-                actions.add(action);
-            });
+            //TODO: get array of actios
+//            node.getObserversIds().forEach((Integer id) -> {
+//                JSONObject action = new JSONObject();
+//                action.put("id", id);
+//                actions.add(action);
+//            });
             result.put("actions", actions);
         }
         return result;
@@ -103,23 +108,28 @@ public class SocketObjects implements CreateNodeObserver, UpdateValueObserver {
 
     private Long longToJSON(Long num) {
         return num & 0x00000000FFFFFFFFL; //TODO: do something for javascript (all numbers are double)
-    };
-
-    @Override
-    public void updateNodeValueEvent(BaseNode observable) {
-        send(updateValueRemoteNode(observable, 0L).toJSONString());
     }
 
     @Override
-    public Integer getId() {
-        return null;
+    public void nodeEvent(BaseNode observable, int reason) {
+        switch (reason) {
+            case CREATE:
+                ArrayList<BaseNode> nodes = new ArrayList<>(1);
+                nodes.add(observable);
+                send(createRemoteNodes(nodes,0L).toJSONString());
+                break;
+            case VALUE_UPD:
+                send(updateValueRemoteNode(observable, 0L).toJSONString());
+                break;
+            case CONFIG_UPD:
+                break;
+            case DEL:
+                break;
+        }
     }
 
-
     @Override
-    public void createNodeEvent(BaseNode observable) {
-        ArrayList<BaseNode> nodes = new ArrayList<>(1);
-        nodes.add(observable);
-        send(createRemoteNodes(nodes,0L).toJSONString());
+    public int observerType() {
+        return WEB;
     }
 }

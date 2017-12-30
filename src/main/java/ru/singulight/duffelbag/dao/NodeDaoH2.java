@@ -2,8 +2,8 @@ package ru.singulight.duffelbag.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import ru.singulight.duffelbag.messagebus.CreateNodeObserver;
-import ru.singulight.duffelbag.messagebus.UpdateValueObserver;
+import ru.singulight.duffelbag.messagebus.MessageBus;
+import ru.singulight.duffelbag.messagebus.NodeEventObserver;
 import ru.singulight.duffelbag.actions.LuaScriptAction;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
@@ -14,17 +14,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import static ru.singulight.duffelbag.messagebus.MessageBus.*;
+
 /**
  * Created by Grigorii Nizovoy info@singulight.ru on 21.07.16.
  */
-public class NodeDaoH2 implements NodeDao, CreateNodeObserver, UpdateValueObserver {
+public class NodeDaoH2 implements NodeDao, NodeEventObserver {
 
     private JdbcTemplate jdbcTemplate;
     private AllNodes allNodes = AllNodes.getInstance();
-    NodeDaoH2() {
-        allNodes.registerCreateNodeObserver(this);
-    }
+    private MessageBus messageBus = MessageBus.getInstance();
 
+    NodeDaoH2() {}
+    {messageBus.registerObserver(ALL_OBSERVABLES, this);}
     @Override
     public void mergeAllNodes() {
 
@@ -52,6 +54,11 @@ public class NodeDaoH2 implements NodeDao, CreateNodeObserver, UpdateValueObserv
     }
 
     @Override
+    public void updateConfiguration(BaseNode baseNode) {
+        jdbcTemplate.update("");
+    }
+
+    @Override
     public void saveValue(BaseNode node) {
 
     }
@@ -67,19 +74,23 @@ public class NodeDaoH2 implements NodeDao, CreateNodeObserver, UpdateValueObserv
     }
 
     @Override
-    public void createNodeEvent(BaseNode observable) {
-        saveNode(observable);
-        observable.registerUpdateObserver(this);
+    public void nodeEvent(BaseNode observable, int reason) {
+        switch (reason) {
+            case CREATE:
+                saveNode(observable);
+                break;
+            case VALUE_UPD:
+                saveValue(observable);
+                break;
+            case CONFIG_UPD:
+                break;
+            case DEL:
+                break;
+        }
     }
-
     @Override
-    public void updateNodeValueEvent(BaseNode observable) {
-        saveValue(observable);
-    }
-
-    @Override
-    public Integer getId() {
-        return null;
+    public int observerType() {
+        return DAO;
     }
 
     private static final class NodeMapper implements RowMapper<BaseNode> {
