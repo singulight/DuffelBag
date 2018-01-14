@@ -1,6 +1,7 @@
 package ru.singulight.duffelbag.nodes;
 
 
+import org.apache.log4j.Logger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  */
 public class IdCounter {
     private static IdCounter ourInstance = new IdCounter();
+    private static final Logger log = Logger.getLogger(IdCounter.class);
 
     public static IdCounter getInstance() {
         return ourInstance;
@@ -22,17 +24,23 @@ public class IdCounter {
     private static List<Long> knownIds = new LinkedList<>();
     private static List<Long> knownDbIds = new LinkedList<>();
 
-    public Long getNewId () throws Exception {
+    public Long getNewId () {
         lastId++;
         // TODO: make search binary tree
         if(knownIds.contains(lastId)) {
             lastId++;
-            if (lastId > 0x5fffffffffffffffL) throw new Exception("IdCounter: New ID too big");
+            if (lastId > 0x5fffffffffffffffL) try {
+                throw new Exception();
+            } catch (Exception e) {
+                log.error("IdCounter: New ID too big");
+            }
         }
         knownIds.add(lastId);
         return lastId;
     }
-    public Long checkDbId (Long id) throws Exception {
+    /**
+     * @return id for duffelbag nodes*/
+    public Long checkDbId (Long id) {
         Long newId;
         if (knownDbIds.contains(id)) {
             newId = getNewId();

@@ -3,7 +3,7 @@ package ru.singulight.duffelbag.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Created by Grigorii Nizovoy info@singulight.ru on 21.07.16.
+ * Created by Grigorii info@singulight.ru on 21.07.16.
  */
 public class CreateDatabaseH2 implements CreateDatabase {
 
@@ -31,7 +31,7 @@ public class CreateDatabaseH2 implements CreateDatabase {
                         "id IDENTITY," +
                         "idNode BIGINT," +
                         "opKey VARCHAR(255)," +
-                        "opValue TEXT)"
+                        "opValue VARCHAR(255))"
         );
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS nodeValues (" +

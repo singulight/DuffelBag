@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ru.singulight.duffelbag.messagebus.MessageBus;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 import ru.singulight.duffelbag.nodes.types.NodePurpose;
@@ -29,6 +30,7 @@ public class AdminSocket {
     private static final Logger log = Logger.getLogger(AdminSocket.class);
     private SocketObjects socketObjects = SocketObjects.getInstance();
     private AllNodes allNodes = AllNodes.getInstance();
+    private MessageBus messageBus = MessageBus.getInstance();
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
@@ -58,9 +60,9 @@ public class AdminSocket {
         Long ver = (Long) mainObject.get("ver");
         Long token = (Long) mainObject.get("token");
         if ( ver >= 10 && ver < 20) {
-            /** Entity - nodes */
+            /* Entity - nodes */
             if (mainObject.get("entity").equals("nodes")) {
-                /** Verb - read */
+                /* Verb - read */
                 if (mainObject.get("verb").equals("read")) {
                     if (mainObject.get("param").equals("byTopic")) {
                         ArrayList<BaseNode> param = new ArrayList<>(1);
@@ -79,13 +81,13 @@ public class AdminSocket {
                         }
                     }
                 }
-                /** Verb - update */
+                /* Verb - update */
                 if (mainObject.get("verb").equals("update")) {
                     // if (mainObject.get("param").equals("normal")) {}
                     JSONObject nodeObject = (JSONObject) mainObject.get("data");
                     BaseNode node = allNodes.getNodeByTopic((String) nodeObject.get("topic"));
 
-                    /** Update exists */
+                    /* Update exists */
                     if (node != null) {
                         node.setName((String) nodeObject.get("name"));
                         node.setKnown((Boolean) nodeObject.get("known"));
@@ -101,18 +103,18 @@ public class AdminSocket {
                         }
                         Map<String, String> options = new HashMap<>();
                         JSONArray rawOptions = (JSONArray) nodeObject.get("options");
-                        Iterator i = rawOptions.iterator();
-                        while (i.hasNext()) {
-                            JSONObject slide = (JSONObject) i.next();
+                        for (Object rawOption : rawOptions) {
+                            JSONObject slide = (JSONObject) rawOption;
                             String key = (String) slide.get("key");
                             String value = (String) slide.get("value");
                             options.put(key, value);
                         }
                         node.deleteAllOptions();
                         node.setOptions(options);
+                        messageBus.onConfigUpdateEvent(node);
 
                     } else {
-                        /** Create new */
+                        /* Create new */
                         node = new BaseNode();
                         node.setVersion("1.0");
                         node.setId(0L);
@@ -131,9 +133,8 @@ public class AdminSocket {
                         }
                         Map<String, String> options = new HashMap<>();
                         JSONArray rawOptions = (JSONArray) nodeObject.get("options");
-                        Iterator i = rawOptions.iterator();
-                        while (i.hasNext()) {
-                            JSONObject slide = (JSONObject) i.next();
+                        for (Object rawOption : rawOptions) {
+                            JSONObject slide = (JSONObject) rawOption;
                             String key = (String) slide.get("key");
                             String value = (String) slide.get("value");
                             options.put(key, value);
@@ -143,7 +144,7 @@ public class AdminSocket {
                     }
                 }
             }
-            /** Entity - actions */
+            /* Entity - actions */
             if (mainObject.get("entity").equals("actions")) {
 
             }

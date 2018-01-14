@@ -7,12 +7,14 @@ import ru.singulight.duffelbag.messagebus.NodeEventObserver;
 import ru.singulight.duffelbag.actions.LuaScriptAction;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
+import ru.singulight.duffelbag.nodes.IdCounter;
 import ru.singulight.duffelbag.nodes.types.NodePurpose;
 import ru.singulight.duffelbag.nodes.types.NodeType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static ru.singulight.duffelbag.messagebus.MessageBus.*;
 
@@ -24,6 +26,7 @@ public class NodeDaoH2 implements NodeDao, NodeEventObserver {
     private JdbcTemplate jdbcTemplate;
     private AllNodes allNodes = AllNodes.getInstance();
     private MessageBus messageBus = MessageBus.getInstance();
+    private IdCounter idCounter = IdCounter.getInstance();
 
     NodeDaoH2() {}
     {messageBus.registerObserver(ALL_OBSERVABLES, this);}
@@ -41,6 +44,10 @@ public class NodeDaoH2 implements NodeDao, NodeEventObserver {
     public void loadAllNodes() {
         List<BaseNode> nodes = jdbcTemplate.query("SELECT * FROM NODE", new NodeMapper());
         nodes.forEach((BaseNode n)-> {
+            n.setId(idCounter.checkDbId(n.getId()));
+            List<Map<String, Object>> options = jdbcTemplate.queryForList("SELECT OPKEY,OPVALUE FROM " +
+                    "NODEOPTIONS WHERE IDNODE=?", n.getId());
+            options.forEach(option -> n.setOption((String) option.get("OPKEY"), (String) option.get("OPVALUE")));
             allNodes.insert(n);
         });
     }
@@ -48,14 +55,17 @@ public class NodeDaoH2 implements NodeDao, NodeEventObserver {
     @Override
     public void saveNode(BaseNode baseNode) {
         jdbcTemplate.update("DELETE FROM NODE WHERE ID=?", baseNode.getId());
+        jdbcTemplate.update("DELETE FROM NODEOPTIONS WHERE IDNODE=?", baseNode.getId());
         jdbcTemplate.update("INSERT INTO NODE (ID, NAME, TOPIC, VERSION, KNOWN, NODETYPE, NODEPURPOSE, CONFIGMESSAGE) " +
                 "VALUES (?,?,?,?,?,?,?,?)", baseNode.getId(), baseNode.getName(), baseNode.getMqttTopic(), baseNode.getVersion(),
                 baseNode.isKnown(), baseNode.getNodeType().toString(), baseNode.getPurpose().toString(), baseNode.getValue());
+        baseNode.getOptions().forEach((key,value) ->
+                jdbcTemplate.update("INSERT INTO NODEOPTIONS (IDNODE, OPKEY, OPVALUE) VALUES (?,?,?)", baseNode.getId(), key, value));
     }
 
     @Override
     public void updateConfiguration(BaseNode baseNode) {
-        jdbcTemplate.update("");
+        saveNode(baseNode);
     }
 
     @Override
@@ -83,6 +93,7 @@ public class NodeDaoH2 implements NodeDao, NodeEventObserver {
                 saveValue(observable);
                 break;
             case CONFIG_UPD:
+                updateConfiguration(observable);
                 break;
             case DEL:
                 break;

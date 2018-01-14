@@ -14,7 +14,6 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 
-import static com.sun.imageio.plugins.jpeg.JPEG.version;
 import static ru.singulight.duffelbag.nodes.types.NodePurpose.*;
 import static ru.singulight.duffelbag.nodes.types.NodeType.*;
 
@@ -36,8 +35,8 @@ public class AddOrRefreshNode {
     }
 
     /**
-     *  @Return id of detected node, null if error
-     *  @Param updateValue true will updateNodeValueEvent value, false will not
+     *  @return id of detected node, null if error
+     *  @param updateValue true will updateNodeValueEvent value, false will not
      *  */
     public Long detectDuffelbagNode(boolean updateValue)  {
 
@@ -100,7 +99,7 @@ public class AddOrRefreshNode {
             }
 
         } else {
-            /**
+            /*
             * Parse node with non duffelbag format
             * */
             currentNode = allNodes.getNodeByTopic(mqttTopic);
@@ -200,7 +199,7 @@ public class AddOrRefreshNode {
         String message = thing.getValue();
         JSONParser jsonParser = new JSONParser();
         JSONObject mainObject = (JSONObject) jsonParser.parse(message);
-        List<Long> localIds = new LinkedList<Long>();
+        List<Long> localIds = new LinkedList<>();
         Map<Long, BaseNode> detectedNodes = new HashMap<>();
 
         String version = (String) mainObject.get("ver");

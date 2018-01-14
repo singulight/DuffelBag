@@ -135,6 +135,7 @@ public class BaseNode  {
         return this.options.containsKey(key);
     }
 
+
     public enum Strategy {
         EACH,
         PERIODICALLY_LAST,

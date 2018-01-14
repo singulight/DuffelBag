@@ -11,7 +11,7 @@ import ru.singulight.duffelbag.nodes.types.NodeType;
 /**
  * Created by Grigorii Nizovoi info@singulight.ru on 29.12.15.
  */
-public class LuaScriptAction implements UpdateValueObserver, Actions{
+public class LuaScriptAction extends Action implements UpdateValueObserver {
 
     private static final Logger log = Logger.getLogger(LuaScriptAction.class);
     private ScriptEngine lua = new ScriptEngineManager().getEngineByName("luaj");
@@ -45,6 +45,11 @@ public class LuaScriptAction implements UpdateValueObserver, Actions{
         } catch (Exception e) {
             log.error("Lua script error: ",e);
         }
+    }
+
+    @Override
+    public Integer getActionId() {
+        return null;
     }
 
 
