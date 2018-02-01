@@ -17,14 +17,14 @@
     "ver" : 10,
     "verb" : "create",      // create, read, update, delete
     "entity" : "nodes",    // nodes, locations, actions, all
-    "data" : []            // for nodes
+    "data" : []            // for nodes, actions
     "id" : 345
 }
 
 /* Node format */
 
 {
-    "ver" : "1.0",                                          // version
+    "ver" : 10,                                             // version
     "id" : 23,                                              // internal ID
     "topic" : "duffelbag/temperature/20000000000003e5",     // topic
     "name" : "Температура на улице",                        // name
@@ -38,7 +38,17 @@
         {...}
     ],
     "actions" : [
-        {"id":245,"name","При включении"},
+        {"id":245,"type","JAVACLASS","desc":"При включении"},
         {...}
     ]
+}
+
+/* Action format */
+{
+    "ver" : 10,
+    "id" : 43,
+    "type" : "JAVACLASS",
+    "desc" : "",
+    "initiators":[]
+    "data" :
 }

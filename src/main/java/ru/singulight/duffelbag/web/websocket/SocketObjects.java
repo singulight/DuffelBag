@@ -1,13 +1,18 @@
 package ru.singulight.duffelbag.web.websocket;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import ru.singulight.duffelbag.actions.Action;
+import ru.singulight.duffelbag.actions.AllActions;
 import ru.singulight.duffelbag.messagebus.MessageBus;
 import ru.singulight.duffelbag.messagebus.NodeEventObserver;
+import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static ru.singulight.duffelbag.messagebus.MessageBus.*;
@@ -16,7 +21,11 @@ import static ru.singulight.duffelbag.messagebus.MessageBus.*;
  * Created by Grigorii Nizovoy info@singulight.ru on 06.01.17.
  */
 public class SocketObjects implements NodeEventObserver {
+
+    private static final Logger log = Logger.getLogger(SocketObjects.class);
     private static SocketObjects ourInstance = new SocketObjects();
+    private AllActions allActions = AllActions.getInstance();
+    private AllNodes allNodes = AllNodes.getInstance();
 
     public static SocketObjects getInstance() {
         return ourInstance;
@@ -49,7 +58,7 @@ public class SocketObjects implements NodeEventObserver {
         }
     }
 
-    JSONObject createRemoteNodes(ArrayList<BaseNode> nodes, Long token) {
+    public JSONObject createRemoteNodes(List<BaseNode> nodes, Long token) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token",token);
         jsonObject.put("ver",10);
@@ -74,6 +83,18 @@ public class SocketObjects implements NodeEventObserver {
         return jsonObject;
     }
 
+    public JSONObject createRemoteActions(List<Action> actions, Long token) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token",token);
+        jsonObject.put("ver",10);
+        jsonObject.put("verb","create");
+        jsonObject.put("entity","actions");
+        JSONArray jsonActions = new JSONArray();
+        actions.forEach(a -> jsonActions.add(actionToJSON(a)));
+        jsonObject.put("data",jsonActions);
+        return jsonObject;
+    }
+
     public JSONObject nodeToJSON(BaseNode node) {
         JSONObject result = new JSONObject();
         if (node != null) {
@@ -95,15 +116,47 @@ public class SocketObjects implements NodeEventObserver {
             });
             result.put("options", options);
             JSONArray actions = new JSONArray();
-            //TODO: get array of actios
-//            node.getObserversIds().forEach((Integer id) -> {
-//                JSONObject action = new JSONObject();
-//                action.put("id", id);
-//                actions.add(action);
-//            });
+            List observers = messageBus.getObserversForObservable(node.getId());
+            if (observers != null) {
+                observers.forEach(o -> {
+                    JSONObject action = new JSONObject();
+                    try {
+                        action.put("id",((Action) o).getActionId());
+                        action.put("type",((Action) o).getActionType().toString());
+                        action.put("desc",((Action) o).getDescription());
+                    } catch (ClassCastException e) {
+                        log.error("SocketObjects: observer " + o.toString() + " is not action.");
+                    }
+                    actions.add(action);
+                });
+            }
             result.put("actions", actions);
         }
         return result;
+    }
+
+    public JSONObject actionToJSON(Action action) {
+        JSONObject result = new JSONObject();
+        result.put("ver", 10);
+        result.put("id", action.getActionId());
+        result.put("type", action.getActionType().toString());
+        result.put("desc", action.getDescription());
+        JSONArray initiators = new JSONArray();
+        List<Long> observables = messageBus.getObservablesForObserver(action);
+        if (observables != null) {
+            observables.forEach(l -> {
+                BaseNode node = allNodes.getNodeById(l);
+                if (node != null) {
+                    initiators.add(node.getMqttTopic());
+                } else {
+                    log.warn("Specified in the action id: "+action.getActionId()+" initiator id: "+l+" does not exist");
+                }
+            });
+        }
+        result.put("initiators", initiators);
+
+        return result;
+        // TODO: send more information to web client. Different "data" for each of class of actions
     }
 
     private Long longToJSON(Long num) {

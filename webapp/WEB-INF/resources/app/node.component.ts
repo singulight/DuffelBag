@@ -59,6 +59,7 @@ import any = jasmine.any;
                             <option value="CURRENT">Измеритель тока</option>
                             <option value="TEXT">Текстовая информация</option>
                             <option value="DIMMER">Регулятор мощности</option>
+                            <option value="SWT">Выключатель сенсор</option>
                             <option value="SWITCH">Выключатель</option>
                         </select>
                     </div>

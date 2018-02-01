@@ -34,7 +34,7 @@ public class LuaScriptAction extends Action implements UpdateValueObserver {
     }
 
     @Override
-    public void doAction() {
+    public void doAction(BaseNode node) {
         BaseNode asd = new BaseNode(10,"duffelbag/voltage/", NodeType.VOLTAGE);
         script = "asd:setValue(1);";
         try {
@@ -70,6 +70,6 @@ public class LuaScriptAction extends Action implements UpdateValueObserver {
 
     @Override
     public void updateNodeValueEvent(BaseNode observable) {
-        doAction();
+        doAction(observable);
     }
 }

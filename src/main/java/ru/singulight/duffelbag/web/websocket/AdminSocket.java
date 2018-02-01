@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ru.singulight.duffelbag.actions.AllActions;
 import ru.singulight.duffelbag.messagebus.MessageBus;
 import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
@@ -31,6 +32,7 @@ public class AdminSocket {
     private SocketObjects socketObjects = SocketObjects.getInstance();
     private AllNodes allNodes = AllNodes.getInstance();
     private MessageBus messageBus = MessageBus.getInstance();
+    private AllActions allActions = AllActions.getInstance();
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
@@ -43,7 +45,7 @@ public class AdminSocket {
         try {
             session.getRemote().sendString(parseClientMessage10(message));
         } catch (Exception e) {
-            log.error("Bad web client request. Stirng: "+message);
+            log.error("During the web request: "+message+" error"+e);
         }
     }
 
@@ -71,7 +73,6 @@ public class AdminSocket {
                     } else {
                         Long id = new BigInteger((String) mainObject.get("param"), 16).longValue();
                         if (id == 0) {
-                            System.out.println(id);
                             response = socketObjects.createRemoteNodes(allNodes.getAllNodesAsList(), token).toJSONString();
 
                         } else {
@@ -112,6 +113,7 @@ public class AdminSocket {
                         node.deleteAllOptions();
                         node.setOptions(options);
                         messageBus.onConfigUpdateEvent(node);
+                        //TODO: parse actions from JSON
 
                     } else {
                         /* Create new */
@@ -146,7 +148,13 @@ public class AdminSocket {
             }
             /* Entity - actions */
             if (mainObject.get("entity").equals("actions")) {
-
+                /* Verb - read */
+                if (mainObject.get("verb").equals("read")) {
+                    Integer id = new BigInteger((String) mainObject.get("param"), 16).intValue();
+                    if (id == 0) {
+                        response = socketObjects.createRemoteActions(allActions.getAllByList(), token).toJSONString();
+                    }
+                }
             }
         }
         return response;

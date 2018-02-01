@@ -14,12 +14,22 @@ import {WebSocketService} from "./websocket.service";
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Название</th>
+                    <th>Описание</th>
                     <th>Инициаторы</th>
                 </tr>
                 </thead>
                 <tbody>
-                
+                <tr *ngFor="let action of actions">
+                    <td>{{action.id}}</td>
+                    <td>{{action.desc}}</td>
+                    <td>
+                        <ul>
+                            <li *ngFor="let o of action.initiators">
+                                {{o}}
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -28,7 +38,24 @@ import {WebSocketService} from "./websocket.service";
 })
 export class ActionListComponent {
     constructor (public webService:WebSocketService) {};
+    public actions: any[];
     ngOnInit() {
         this.webService.start();
+        this.actions = [];
+        let getAllActionsJSON = {
+            token:0,
+            ver:10,
+            verb:"read",
+            entity:"actions",
+            param:"0"
+        };
+        this.webService.send(JSON.stringify(getAllActionsJSON));
+        this.webService.message.subscribe((msg: any) => {
+            if(msg['entity'] === 'actions') {
+                if(msg['verb'] === 'create') {
+                    this.actions = msg['data'];
+                }
+            }
+        });
     }
 }

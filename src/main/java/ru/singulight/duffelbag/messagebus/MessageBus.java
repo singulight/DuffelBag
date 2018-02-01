@@ -4,6 +4,8 @@ import ru.singulight.duffelbag.nodes.AllNodes;
 import ru.singulight.duffelbag.nodes.BaseNode;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 
 /**
  * Created by grigorii on 02.12.17.
@@ -26,12 +28,11 @@ public class MessageBus {
     public final static int ACTION = 16, DAO = 17, WEB = 18;
     /** Observable id for all nodes*/
     public final static Long ALL_OBSERVABLES = 0L;
-    /** Main array */
-    private static Map<Long, List<NodeEventObserver>> members = new HashMap<>();
+    /** Main Map <Observable, List of Observers>*/
+    private static Map<Long, List<NodeEventObserver>> members = new Hashtable<>();
     static {
         members.put(0L,new LinkedList<>());
     }
-
     /**
      * @param observableId - observable node id, ALL_OBSERVABLES - on create event notify all
      * @param observer - observer interface*/
@@ -55,6 +56,16 @@ public class MessageBus {
     }
     public List<NodeEventObserver> getObserversForObservable(Long observableId) {
         return members.get(observableId);
+    }
+
+    public List<Long> getObservablesForObserver(NodeEventObserver observer) {
+        List<Long> observables = new LinkedList<>();
+        members.forEach((k,v) -> {
+            v.forEach(l -> {
+                if (l.equals(observer)) observables.add(k);
+            });
+        });
+        return observables;
     }
 
     public void onCreateEvent(BaseNode observable) {

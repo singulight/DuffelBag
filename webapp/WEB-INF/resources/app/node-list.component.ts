@@ -17,7 +17,7 @@ import {TokenCounterService} from "./token-counter.service";
                         <div class="panel-heading">
                             <h3 class="panel-title">Заголовок</h3>
                         </div>
-                        <div class="panel-body">{{tty}}</div>
+                        <div class="panel-body">{{tokenCounter.getCurrent()}}</div>
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -72,9 +72,10 @@ import {TokenCounterService} from "./token-counter.service";
                             </ul>
                         </td>
                         <td>
-                            <ul>
-                                <li *ngFor="let action of node.actions">Id: {{action.id}}</li>
-                            </ul>
+                                <li *ngFor="let action of node.actions">Id: {{action.id}} <br/>
+                                    Тип: {{action.type}}<br/>
+                                    Описание: {{action.desc}}
+                                </li>
                         </td>
                     </tr>
                     </tbody>
@@ -84,7 +85,7 @@ import {TokenCounterService} from "./token-counter.service";
     providers:[WebSocketService]
 })
 export class NodeListComponent {
-    constructor (private webService:WebSocketService, private tokenCounter: TokenCounterService) {};
+    constructor (private webService:WebSocketService, public tokenCounter: TokenCounterService) {};
     public nodes: BaseNode[];
 
     ngOnInit() {

@@ -1,8 +1,6 @@
 package ru.singulight.duffelbag.actions;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -13,10 +11,10 @@ public class AllActions {
     private AllActions() {
     }
 
-    private static List<Action> allActions = new CopyOnWriteArrayList<>();
+    private static Map<Integer, Action> allActions = new Hashtable<>();
 
     public void insert(Action action) {
-        allActions.add(action.getActionId(), action);
+        allActions.put(action.getActionId(), action);
     }
 
     public void delete(int id) {
@@ -25,6 +23,14 @@ public class AllActions {
 
     public Action getById(Integer id) {
         return allActions.get(id);
+    }
+
+    public Map getAll () {
+        return allActions;
+    }
+
+    public List<Action> getAllByList(){
+        return new LinkedList<>(allActions.values());
     }
 
     public static AllActions getInstance() {

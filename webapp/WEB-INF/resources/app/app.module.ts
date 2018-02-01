@@ -13,18 +13,20 @@ import {ActionListComponent} from "./action-list.component";
 import {NotFoundComponent} from "./notfound.component";
 import {WebSocketService} from "./websocket.service";
 import {TokenCounterService} from "./token-counter.service";
+import {ActionLuaComponent} from "./action-lua.component";
 
 const appRoutes : Routes = [
     {path:'', component: NodeListComponent},
     {path:'nodelist', component: NodeListComponent},
     {path:'node', component: NodeComponent},
     {path:'actionlist', component: ActionListComponent},
+    {path: 'actionlua', component: ActionLuaComponent},
     {path:'**', component: NotFoundComponent}
 ];
 
 @NgModule({
     imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule ],
-    declarations: [ MainComponent, NodeListComponent, NodeComponent, ActionListComponent, NotFoundComponent ],
+    declarations: [ MainComponent, NodeListComponent, NodeComponent, ActionListComponent, ActionLuaComponent, NotFoundComponent ],
     providers:    [ WebSocketService, TokenCounterService],
     bootstrap:    [ MainComponent ]
 })
