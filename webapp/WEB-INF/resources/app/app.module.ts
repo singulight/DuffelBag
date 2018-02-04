@@ -14,8 +14,10 @@ import {NotFoundComponent} from "./notfound.component";
 import {WebSocketService} from "./websocket.service";
 import {TokenCounterService} from "./token-counter.service";
 import {ActionLuaComponent} from "./action-lua.component";
+import {AceDirective} from "./ace.directive";
 
 const appRoutes : Routes = [
+
     {path:'', component: NodeListComponent},
     {path:'nodelist', component: NodeListComponent},
     {path:'node', component: NodeComponent},
@@ -25,8 +27,8 @@ const appRoutes : Routes = [
 ];
 
 @NgModule({
-    imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule ],
-    declarations: [ MainComponent, NodeListComponent, NodeComponent, ActionListComponent, ActionLuaComponent, NotFoundComponent ],
+    imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), FormsModule],
+    declarations: [ MainComponent, NodeListComponent, NodeComponent, ActionListComponent, ActionLuaComponent, AceDirective, NotFoundComponent],
     providers:    [ WebSocketService, TokenCounterService],
     bootstrap:    [ MainComponent ]
 })

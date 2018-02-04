@@ -14,6 +14,7 @@ import {WebSocketService} from "./websocket.service";
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>Тип</th>
                     <th>Описание</th>
                     <th>Инициаторы</th>
                 </tr>
@@ -21,12 +22,11 @@ import {WebSocketService} from "./websocket.service";
                 <tbody>
                 <tr *ngFor="let action of actions">
                     <td>{{action.id}}</td>
+                    <td>{{action.type}}</td>
                     <td>{{action.desc}}</td>
                     <td>
                         <ul>
-                            <li *ngFor="let o of action.initiators">
-                                {{o}}
-                            </li>
+                            <li *ngFor="let o of action.initiators">{{o}}</li>
                         </ul>
                     </td>
                 </tr>
